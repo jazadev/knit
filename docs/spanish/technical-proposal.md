@@ -16,5 +16,5 @@
 
 ## 3. Lenguajes de progrmación, librerías y marcos de trabajo
   * Flask/Quart
-  * Next.js o Steamlit
-  * 
+  * Next.js o HTMX
+  * Semantic Kernel, Microsoft Agent Framework
