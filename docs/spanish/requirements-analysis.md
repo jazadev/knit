@@ -99,9 +99,9 @@
 
   * El **portal**, componentes y servicios asociado no deben hacer recomendaciones especificas de ninguno de los temas.
 
-  * Crear un ambiente seguro y de confianza, fomentando la participación activ, además de fomentar ermiendo 
+  * Crear un ambiente seguro y de confianza, fomentar la participación activa. 
 
-  * El tono editorial y narrativo deberá ser formal pero claro y conciso, empático, animar a la participación en un marco de reglas claras y respetuosas.
+  * El tono editorial y narrativo deberá ser formal pero claro y conciso, empático, animar a la participación con un marco de reglas claras y respetuosas.
 
   * Hacer uso de lenguaje inclusivo y respetuso.
 
