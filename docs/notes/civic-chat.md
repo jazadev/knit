@@ -38,3 +38,9 @@ Muchos personas enfrentan obstáculos para entender:
 - No priorizará propuestas.
 - No generará predicciones electorales.
 - No dará opiniones ni juicios de valor.
+
+# Stack
+- **Frontend:** React
+- **UI Library:** [Chakra UI](https://chakra-ui.com/)
+- **Hosting:** Azure Static Web Apps
+- **Backend:** Azure Functions (Python)
