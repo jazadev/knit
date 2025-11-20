@@ -1,109 +1,115 @@
 # Análisis de Requerimientos (Civic Knit)
 
-## 1. ¿Cómo puede la IA potenciar las formas en que nos reunimos en nuestras comunidades y nuestra política?
+## **1. Situación Actual**
 
-### 1.1 Facilitando el acceso a información a los miembros de la comunidad
+Los miembros de la comunidad a menudo tienen dificultades para encontrar información precisa y oportuna sobre políticas locales, eventos y servicios, en donde los canales tradicionales carecen de interactividad y personalización, lo que genera desinterés y desinformación.
 
-* Se suguiere crear un punto de acceso único con un avanico de servicios útiles a los miembros de la comunidad.
-* Contar con el **portal** que brinde de manera **XXX** datos e información relevante para la comunidad.
-* Contar con la base de datos que compile datos e información relevante para la comunidad.
-* Componentes sugeridos:
+## **2. ¿Cómo Revertir la Situación Actual?**
 
-  * Chatbot.
-  * Secciones por temas.
-  * Favoritos / intereses.
-* Canales de comunicación:
+Creando una plataforma soportada en Inteligencia Artificial que de cause a la participación cívica que permita a las comunidades acceder a información del gobierno local, participar en discusiones y recibir actualizaciones personalizadas.
 
-  * Email.
-  * Mensajería de texto.
-  * Redes sociales.
-  * Podcast conducido por un agente.
+## **3. Descripción General**
 
-### 1.2 Proporcionando información oportuna
+**Civic Knit** es una plataforma centralizada diseñada para orientar, aprender y consultar información cívica verificada, libre de propaganda, ideologías, afinidades y corrientes políticas. Cualquier ciudadano puede hacer uso de la plataforma de forma anónima o crear una cuenta de acceso para personalizar su experiencia.
 
-  * Extracción de datos desde fuentes oficiales o confiables.
-  * Contraste con información entrenada en el modelo vs más acutalizada.
+## **4. Objetivo Principal**
 
-    * Generar versiones de antes y ahora en casos en los que aplique, como por ejemplo trámites.
+Ser la herramienta cercana a las personas en la que se brinde información relativa a su localidad, y cuyos fines son únicamente educativos e informativos. Esta no pretende influir en la toma de decisiones de los miembros de la comunidad ni guiar sus acciones de manera directa o indirecta, actuando solo como una fuente de información para que cada individuo ejerza de manera responsable la toma de sus propias decisiones basadas en su juicio, contexto y circunstancias particulares.
 
-  * Aprovechamiento y Activación de procesos **RAG** (Retrieval-Augmented Generation), cuando aplique.
+## **5. ¿Cómo Afrontar el Reto?**
 
-### 1.3 Contar con redes sociales moderadas  
+- **Información electoral confusa**: explica cómo funciona una elección, qué aparece en la boleta y conceptos clave como padrón, voto nulo, actas o casillas.
+- **Funciones del gobierno local**: aclara el papel de alcaldías, concejales y el presupuesto participativo.
+- **Trámites básicos**: guías prácticas para RFC, INE, empadronamiento y servicios municipales.
+- **Acceso disperso a oportunidades**: centraliza becas, ferias de empleo, eventos culturales y talleres.
 
-  * Garantizar un entorno seguro, positivo y neutral a lo miembros de la comunidad.
-  * Plataformas sugeridas:
+## **6. Público Objetivo**
 
-    * Mastodom
+Miembros de comunidad que:
 
-### 1.4 Temas a atender
+- Sean mayores de edad.
+- Desean una plataforma agíl y de fácil acceso que ofrezca información concreta y neutral a través del uso de lenguaje natural.
+- Son usuarios con experiencia o novatos en el uso de plataformas soportadas con tecologías de Inteligencia Artificial.
+- No se sienten atraidos para informarse de los asuntos de gobierno, represantación, administración y recreacion de su comunidad.
+- Sienten vulnerados sus derechos y privacidad.
+- Son internautas o usuarios de diferentes portales o plataformas que se sienten frustrados por la complejidad y el tiempo dedicado en allegarse de información.
+- Desean entender su gobierno local, la experiencia, iniciativas, propuestas y el papel que juegan sus representantes actuales y futuros para con la comunidad.
+- Votarán por primera vez y/o no comprenden bien el proceso electoral.
+- Son migrantes o recién llegados y requieren orientación sobre trámites y servicios locales.
 
-#### 1.4.1 Políticas locales
+## **7. Aprovechar la IA para Potenciar la Participación Cívica**
 
-  * Perfiles o curricula de:
+### 7.1 Acceso centralizado a información
 
-    * Titulares/Representantes
-    * Candidatos
-  * Propuestas en campañas de candidatos a elección
-  * Iniciativas de Titulares/Representantes
-  * Logros destacados:
-    * Titulares/Representantes
-    * Candidatos
-  * Declaraciones públicas:
-    * Titulares
-    * Candidatos
+- Plataforma con chatbot **moderado**.
+- Personalización e Identificación de audiencia por intereses, temas, edad, localidad, genero, lenguaje.
+- Canales de comunicación: email, SMS, redes sociales y podcast de audio.
 
-#### 1.4.2 Eventos:
+### 7.2 Información oportuna
 
-  * Políticos
-  * Culturales
-  * Tecnológicos
-  * De nicho (opcional)
+- Extracción desde fuentes oficiales comprobadas.
+- Comparaciones “antes vs ahora” en trámites.
+- Actualización y precisión continua de la información.
 
-#### 1.4.3 Servicio
+### 7.3 Espacios seguros
 
-##### 1.4.3.1 Sercicios básicos
+- Entorno neutral y confiable con reglas claras.
+- Redes sociales moderadas (ej. Mastodon). ⭐ implementación a futuro
 
-* **Abastecimiento de agua**: Suministro de agua potable, drenaje y saneamiento.
-* **Energía y telecomunicaciones**: Servicio eléctrico, gas y comunicaciones.
-* **Gestión de residuos**: Recolección, tratamiento y disposición de basura y aguas residuales.
-* **Infraestructura básica**: Mantenimiento de calles, carreteras, alumbrado público y otras vías.
+## **8. Temas que Atiende**
 
-##### 1.4.3.2 Servicios sociales y culturales
+- **Política local**: perfiles de representantes y candidatos, iniciativas, logros y declaraciones oficiales.
+- **Eventos**: políticos, culturales, tecnológicos y especializados.
+- **Servicios públicos**: agua, energía, residuos, infraestructura, salud, educación, cultura, deporte, seguridad, trámites administrativos y electorales, transporte, mercados y vivienda.
 
-* **Educación**: Escuelas y otros niveles educativos.
-* **Salud**: Hospitales y centros de salud.
-* **Cultura y deporte**: Bibliotecas, centros deportivos y recreativos; promoción de eventos culturales.
+## **9. Principios y Lineamientos**
 
-#### 1.4.3.3 Seguridad y administración
+- Neutralidad absoluta.
+- No sugiere o recomienda acerca de los temas consultados.
+- No emite opiniones políticas ni predicciones electorales.
+- Contenido claro e inclusivo.
+- Lenguaje respetuoso y accesible para cualquier nivel socioeconómico y sociocultural.
+- Grantizar la accesibilidad y usabilidad para usuarios con diversas capacidades (lectores de pantalla, contraste visual, dispositivos móviles).
 
-* **Seguridad pública**: Policía, bomberos y servicios de emergencia.
-* **Servicios judiciales**: Administración de justicia y notarial público.
-* **Trámites administrativos**: Expedición de certificados personales y otros documentos.
-* **Trámites electorales**: Registro a padrón, actualizaciones, atención a convocatorias.
+## **10. Casos de Uso**
 
-##### 1.4.3.4 Infraestructura
+### Globales
 
-* **Transporte**: Transporte público e infraestructura (portuaria, aeroportuaria, etc. ).
-* **Mercados**: Gestión de mercados y centrales de abasto.
-* **Vivienda**: Servicios relacionados con la vivienda pública.
+#### Identificación, Autenticación y Privacidad
 
-## 2. Los canales tradicionales carecen de Interactividad y Personalización
+- **Modo anónimo**: no se solicitan datos personales. no se define perfil para temas de interes, canales de interacción, opcionalmente podrá definir etnia, idioma y genero. obligadamente se obtendrá ubicación a través del navegador/ISP (cómo lo hace google o bing). 
+- **Cuenta registrada**: se solicitarán datos personales. se define perfil temas de interes, canales de interacción (personalizar secciones cívicas - considero que se puede personalizar en los interses). Los datos históricos podrán ser eliminados en cualquier momento y nunca se usarán o compartirán con fines políticos o con terceros. obligadamente se obtendrá ubicación a través del navegador/ISP (cómo lo hace google o bing).
+- Capacidad para entender y manejar 3 lenguajes: inglés americano, español méxico y francés francia.
 
-  * ¿Cómo revertir la situación? (Spin the situation)
+### Particulares
 
-    * Plataforma de participación cívica soportada con herramientas y procesos de inteligencia artificial.
-    * Consolidar datos de fuentes públicas, portales gubernamentales y organizaciones no gubernamentales confiables.
-    * Inclusivo a todos los miembros de la comunidad (diferentes etnias, capacidades  sensoriales e identidad de género). Acceso a través de dispositivos de escritorio y móviles como tabletas y teléfonos.
+- **Caso 1**  
+Usuario:“Qué hace un concejal [alcalde en México] en CDMX?”  
+Civic Knit: Explica de forma breve y neutral las funciones del concejal (alcalde) y su rol en la alcaldía.  
 
-## 3. Contexto 
+- **Caso 2**  
+Usuario: “Necesito renovar mi INE, qué documentos piden?”  
+Civic Knit: Muestra requisitos actualizados, opciones de cita y diferencias entre reposición, corrección y renovación.
 
-  * El **portal**, componentes y servicios asociado no deben hacer recomendaciones especificas de ninguno de los temas.
+- **Caso 3**  
+Usuario: “A quién le corresponde reparar la luz en mi calle?”  
+Civic Knit: Indica que corresponde a la alcaldía y detalla el procedimiento de reporte.
 
-  * Crear un ambiente seguro y de confianza, fomentar la participación activa. 
+- **Caso 4**  
+Usuario: “Qué eventos gratuitos hay esta semana?”  
+Civic Knit: Lista actividades verificadas y horarios, sin recomendar ninguna en particular.
 
-  * El tono editorial y narrativo deberá ser formal pero claro y conciso, empático, animar a la participación con un marco de reglas claras y respetuosas.
+📌 **Desarrollar el número de casos necesarios para cubrir los requerimientos**
 
-  * Hacer uso de lenguaje inclusivo y respetuso.
+## **11. Componentes (Secciones/Servicios)**
 
-  * Anticipar los intereses.
-
+- **Gestión de sesión**: inicio, cierre y recuperación de contraseña.
+- **Información centralizada**: con base de datos cívica.
+- **Chatbot moderado** con IA responsable, etc.
+    - **Moderación híbrida**: IA + reglas claras + supervisión humana.
+- **Perfil**
+    - **Temas de interese**.
+    - **Canales de comunicación**: email, SMS, redes sociales, podcast.
+- **Privacidad y Cookies**
+- **Términos de uso**
+- **Código de conducta**

@@ -1,6 +1,6 @@
 # **Civic Knit**
 
-**Lema/Slogan**: “Enlazando personas con su localidad”
+**Lema/Slogan**: “Enlazando personas con su localidad | Engaging people with their community”
 Plataforma neutral de aporte cívico entre personas y su localidad
 
 ## **1. Situación Actual**
@@ -84,25 +84,25 @@ Miembros de comunidad que:
 - **Cuenta registrada**: se solicitarán datos personales. se define perfil temas de interes, canales de interacción (personalizar secciones cívicas - considero que se puede personalizar en los interses). Los datos históricos podrán ser eliminados en cualquier momento y nunca se usarán o compartirán con fines políticos o con terceros. obligadamente se obtendrá ubicación a través del navegador/ISP (cómo lo hace google o bing).
 - Capacidad para entender y manejar 3 lenguajes: inglés americano, español méxico y francés francia.
 
-## Particulares
+### Particulares
 
-- **Caso 1**
-Usuario:“Qué hace un concejal [alcalde en México] en CDMX?”
-Civic Knit: Explica de forma breve y neutral las funciones del concejal (alcalde) y su rol en la alcaldía.
+- **Caso 1**  
+Usuario:“Qué hace un concejal [alcalde en México] en CDMX?”  
+Civic Knit: Explica de forma breve y neutral las funciones del concejal (alcalde) y su rol en la alcaldía.  
 
-- **Caso 2**
-Usuario: “Necesito renovar mi INE, qué documentos piden?”
+- **Caso 2**  
+Usuario: “Necesito renovar mi INE, qué documentos piden?”  
 Civic Knit: Muestra requisitos actualizados, opciones de cita y diferencias entre reposición, corrección y renovación.
 
-- **Caso 3**
-Usuario: “A quién le corresponde reparar la luz en mi calle?”
+- **Caso 3**  
+Usuario: “A quién le corresponde reparar la luz en mi calle?”  
 Civic Knit: Indica que corresponde a la alcaldía y detalla el procedimiento de reporte.
 
-- **Caso 4**
-Usuario: “Qué eventos gratuitos hay esta semana?”
+- **Caso 4**  
+Usuario: “Qué eventos gratuitos hay esta semana?”  
 Civic Knit: Lista actividades verificadas y horarios, sin recomendar ninguna en particular.
 
-📌 **Desarrollar el numero de casos necesarios para cubrir los requerimientos**
+📌 **Desarrollar el número de casos necesarios para cubrir los requerimientos**
 
 ## **11. Componentes (Secciones/Servicios)**
 
