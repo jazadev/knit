@@ -52,11 +52,11 @@
 * Consultas a través de **consultas Kusto(KQL)**
 * Panel y widgets:
   * Métricas → (Server response time, Request, Faiulures).
-  * Logs (Análiticas) → consulta pesonalizadas con KQL.
+  * Logs (Analíticas) → consulta personalizadas con KQL.
   * Dependencias → para ver tiempos de OpenAI, Base de Datos.
   * Usuarios → para ver sesiones activas.
 
-## 3. Lenguajes de progrmación, librerías, extensiones y marcos de trabajo
+## 3. Lenguajes de programación, librerías, extensiones y marcos de trabajo
   * Flask/Quart
   * HTMX
   * Vanilla JavaScript y AlpineJS
@@ -88,7 +88,7 @@ knit/
 │   │   ├── model.py            # Definición del modelo de base de datos
 │   │   └── services.py         # Clases/funciones de servicios/ayudadores asociados al endpoint
 │   │
-│   ├── app.py                  # Inicializador y configuración de aplicacion
+│   ├── app.py                  # Inicializador y configuración de aplicación
 │   ├── .gitignore              # Lista de archivos o directorios que se deben ignorar y no rastrear en el repositorio
 │   ├── helpers.py              # Funciones de ayuda de ámbito general
 │   ├── set-env.sh              # Elimina variables de entorno (se ignora archivo en el repositorio)
@@ -106,7 +106,7 @@ knit/
 │   ├── header/                 # Componente cabecera
 │   │   ├── index.html          # Plantilla de cabecera
 │   │   └── partials/           # Parciales de cabecera
-│   │       └── head-1.html     # Plantilla de titulo 1
+│   │       └── head-1.html     # Plantilla de título 1
 │   │
 │   ├── components/             # Botón TTS, subtítulos, accesibilidad * Valorar que tan atómicas serán las plantillas
 │   └── public/                 # Recursos globales
