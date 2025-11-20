@@ -1,6 +1,6 @@
 # **Civic Knit**
 
-**Lema/Slogan**: “Enlazando personas con su localidad | Engaging people with their community”
+**Lema/Slogan**: “Enlazando personas con su localidad | Engaging people with their community”  
 Plataforma neutral de aporte cívico entre personas y su localidad
 
 ## **1. Situación Actual**
@@ -31,9 +31,9 @@ Ser la herramienta cercana a las personas en la que se brinde información relat
 Miembros de comunidad que:
 
 - Sean mayores de edad.
-- Desean una plataforma agíl y de fácil acceso que ofrezca información concreta y neutral a través del uso de lenguaje natural.
-- Son usuarios con experiencia o novatos en el uso de plataformas soportadas con tecologías de Inteligencia Artificial.
-- No se sienten atraidos para informarse de los asuntos de gobierno, represantación, administración y recreacion de su comunidad.
+- Desean una plataforma ágil y de fácil acceso que ofrezca información concreta y neutral a través del uso de lenguaje natural.
+- Son usuarios con experiencia o novatos en el uso de plataformas soportadas con tecnologías de Inteligencia Artificial.
+- No se sienten atraídos para informarse de los asuntos de gobierno, representación, administración y recreación de su comunidad.
 - Sienten vulnerados sus derechos y privacidad.
 - Son internautas o usuarios de diferentes portales o plataformas que se sienten frustrados por la complejidad y el tiempo dedicado en allegarse de información.
 - Desean entender su gobierno local, la experiencia, iniciativas, propuestas y el papel que juegan sus representantes actuales y futuros para con la comunidad.
@@ -72,7 +72,7 @@ Miembros de comunidad que:
 - No emite opiniones políticas ni predicciones electorales.
 - Contenido claro e inclusivo.
 - Lenguaje respetuoso y accesible para cualquier nivel socioeconómico y sociocultural.
-- Grantizar la accesibilidad y usabilidad para usuarios con diversas capacidades (lectores de pantalla, contraste visual, dispositivos móviles).
+- Garantizar la accesibilidad y usabilidad para usuarios con diversas capacidades (lectores de pantalla, contraste visual, dispositivos móviles).
 
 ## **10. Casos de Uso**
 
@@ -80,22 +80,22 @@ Miembros de comunidad que:
 
 #### Identificación, Autenticación y Privacidad
 
-- **Modo anónimo**: no se solicitan datos personales. no se define perfil para temas de interes, canales de interacción, opcionalmente podrá definir etnia, idioma y genero. obligadamente se obtendrá ubicación a través del navegador/ISP (cómo lo hace google o bing). 
-- **Cuenta registrada**: se solicitarán datos personales. se define perfil temas de interes, canales de interacción (personalizar secciones cívicas - considero que se puede personalizar en los interses). Los datos históricos podrán ser eliminados en cualquier momento y nunca se usarán o compartirán con fines políticos o con terceros. obligadamente se obtendrá ubicación a través del navegador/ISP (cómo lo hace google o bing).
-- Capacidad para entender y manejar 3 lenguajes: inglés americano, español méxico y francés francia.
+- **Modo anónimo**: no se solicitan datos personales. no se define perfil para temas de interés, canales de interacción, opcionalmente podrá definir etnia, idioma y género. obligadamente se obtendrá ubicación a través del navegador/ISP (cómo lo hace google o bing). 
+- **Cuenta registrada**: se solicitarán datos personales. se define perfil temas de intéres, canales de interacción (personalizar secciones cívicas - considero que se puede personalizar en los intereses). Los datos históricos podrán ser eliminados en cualquier momento y nunca se usarán o compartirán con fines políticos o con terceros. obligadamente se obtendrá ubicación a través del navegador/ISP (cómo lo hace google o bing).
+- Capacidad para entender y manejar 3 lenguajes: inglés - Estados Unidos, español México y francés Francia.
 
 ### Particulares
 
 - **Caso 1**  
-Usuario:“Qué hace un concejal [alcalde en México] en CDMX?”  
+Usuario:“¿Qué hace un concejal [alcalde en México] en CDMX?”  
 Civic Knit: Explica de forma breve y neutral las funciones del concejal (alcalde) y su rol en la alcaldía.  
 
 - **Caso 2**  
-Usuario: “Necesito renovar mi INE, qué documentos piden?”  
+Usuario: “¿Necesito renovar mi INE, qué documentos piden?”  
 Civic Knit: Muestra requisitos actualizados, opciones de cita y diferencias entre reposición, corrección y renovación.
 
 - **Caso 3**  
-Usuario: “A quién le corresponde reparar la luz en mi calle?”  
+Usuario: “¿A quién le corresponde reparar la luz en mi calle?”  
 Civic Knit: Indica que corresponde a la alcaldía y detalla el procedimiento de reporte.
 
 - **Caso 4**  
