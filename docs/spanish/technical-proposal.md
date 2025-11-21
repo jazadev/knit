@@ -76,55 +76,115 @@ knit/
 │
 ├── backend/                    # API y orquestación
 │   ├── main/                   # Componente/Endpoint central
-│   │   ├── _init_.py           # Configuración de blueprint
-│   │   ├── route.py            # Definición de endpoints asociados
-│   │   └── controller.py       # Funciones de endpoints
+│   │   ├── __init__.py         # Configuración de blueprint
+│   │   ├── route.py            # Definición de endpoints
+│   │   └── controller.py       # Lógica de inicio aplicación
 │   │
-│   ├── auth/                   # Componente/Endpoint autenticación
-│   │   ├── _init_.py           # Configuración de blueprint
-│   │   ├── route.py            # Definición endpoints asociados
-│   │   ├── controller.py       # Funciones de endpoints
+│   ├── auth/                   # Autenticación Microsoft
+│   │   ├── __init__.py         # Configuración de blueprint
+│   │   ├── route.py            # Definición endpoints
+│   │   ├── controller.py       # Lógica de autenticación
 │   │   ├── forms.py            # Definición de formulario
 │   │   ├── model.py            # Definición del modelo de base de datos
-│   │   └── services.py         # Clases/funciones de servicios/ayudadores asociados al endpoint
+│   │   └── services.py         # Clases/funciones de servicios/auxiliares
 │   │
-│   ├── app.py                  # Inicializador y configuración de aplicación
+│   ├── chat/                   # Chat conversacional
+│   │   ├── __init__.py         # Configuración de blueprint
+│   │   ├── route.py            # Definición de endpoints
+│   │   └── controller.py       # Lógica de chat
+│   │
+│   ├── database/               # Capa de Datos
+│   │   ├── __init__.py
+│   │   ├── connection.py       # Cosmo DB connection
+│   │   ├── models.py           # Todos los modelos
+│   │   ├── migrations/         # Migrations
+│   │   └── seed_data.py        # Datos iniciales
+│   │
+│   ├── app.py                  # Inicializador Flask
+│   ├── config.py               # Configuración de entorno
 │   ├── .gitignore              # Lista de archivos o directorios que se deben ignorar y no rastrear en el repositorio
-│   ├── helpers.py              # Funciones de ayuda de ámbito general
-│   ├── set-env.sh              # Elimina variables de entorno (se ignora archivo en el repositorio)
-│   ├── requirements.txt        # Dependencias (semantic-kernel, azure-ai, etc.)
-│   ├── set-env.sh              # Establece variables de entorno (se ignora archivo en el repositorio)
-│   └── tests/                  # Colección de pruebas unitarias
+│   ├── helpers.py              # Funciones auxiliares globales
+│   ├── set-env.sh              # Elimina variables de entorno (en .gitignore)
+│   ├── requirements.txt        # Dependencias de Python
+│   ├── set-env.sh              # Establece variables de entorno (en .gitignore)
+│   └── tests/                  # Colección de pruebas
+│       ├── test_agents.py
+│       ├── test_auth.py
+│       └── test_chat.py
 │
-├── frontend/                   # Interfaz de la aplicación
-│   ├── layout.html             # Plantilla de disposición general
-│   ├── _forms.html             # Definición macros para formularios
-│   ├── toast/                  # Componente notificaciones no intrusivas
-│   │   ├── top-message.html    # Plantilla de mensaje de arriba
-│   │   └── bottom-message.html # Plantilla de mensaje de abajo
-│   │
-│   ├── header/                 # Componente cabecera
-│   │   ├── index.html          # Plantilla de cabecera
-│   │   └── partials/           # Parciales de cabecera
-│   │       └── head-1.html     # Plantilla de título 1
-│   │
-│   ├── components/             # Botón TTS, subtítulos, accesibilidad * Valorar que tan atómicas serán las plantillas
-│   └── public/                 # Recursos globales
-│       ├── js/                 # Código JavaScript
-│       ├── img/                # Imágenes
-│       └── css/                # Hojas de estilo
+├── frontend/                            # Interfaz de aplicación
+│   ├── templates/
+│   │   ├── layout.html                  # Plantilla base
+│   │   ├── _forms.html                  # Definición macros para formularios
+│   │   │
+│   │   ├── auth/
+│   │   │   ├── login.html               # Plantilla de inicio de sesión
+│   │   │   └── callback.html            # Plantilla devolución de llamada
+│   │   │
+│   │   ├── header/                      # Componente cabecera
+│   │   │   ├── index.html               # Plantilla de cabecera
+│   │   │   └── partials/                # Parciales de cabecera
+│   │   │       └── head-1.html          # Plantilla de título 1
+│   │   │
+│   │   ├── sidebar/                     # Componente barra lateral
+│   │   │   ├── index.html               # Plantilla de barra lateral
+│   │   │   └── partials/                # Parciales de barra lateral
+│   │   │       ├── header.html          # Plantilla cabecera
+│   │   │       ├── body.html            # Plantilla cuerpo
+│   │   │       └── footer.html          # Plantilla pie
+│   │   │
+│   │   ├── notification/                # Componente notificación
+│   │   │   ├── index.html               # Plantilla notificación
+│   │   │   └── partials/                # Parciales de notificación
+│   │   │       ├── header.html          # Plantilla cabecera
+│   │   │       ├── body.html            # Plantilla cuerpo
+│   │   │       ├── footer.html          # Plantilla pie
+│   │   │       └── card.html            # Plantilla tarjeta
+│   │   │
+│   │   ├── settings/                    # Componente ajustes
+│   │   │   ├── index.html               # Plantilla ajustes
+│   │   │   └── partials/                # Parciales de ajustes
+│   │   │       ├── header.html          # Plantilla cabecera
+│   │   │       ├── body.html            # Plantilla cuerpo
+│   │   │       ├── footer.html          # Plantilla pie
+│   │   │       ├── personal-data.html   # Plantilla datos personales
+│   │   │       ├── channels.html        # Plantilla canales
+│   │   │       └── interest.html        # Plantilla intereses
+│   │   │
+│   │   ├── components/                  # Colección de componentes
+│   │   │   ├── toast/                   # Componente notificación
+│   │   │   │   └── index.html           # Plantilla notificación
+│   │   │   └── buttons/                 # Componentes botón
+│   │   │       ├── hamburger-menu.html  # Plantilla menú hamburgesa
+│   │   │       ├── zoom-in-out.html     # Plantilla acercar / alejar
+│   │   │       ├── language.html        # Plantilla lenguaje
+│   │   │       └── hamburger-menu.html  # Plantilla notificación
+│   │   │
+│   │   └── errors/
+│   │       ├── 404.html
+│   │       └── 500.html
+│   │   
+│   └── public/                          # Recursos globales
+│       ├── js/                          # Código JavaScript
+│       │   ├── i18n.js                  # Cliente de traducción
+│       │   └── knit.js                  # Script adicionales
+│       ├── img/                         # Imágenes
+│       │   ├── hamburger.svg            # Hamburgesa
+│       │   └── logo.svg                 # Logotipo
+│       └── css/                         # Hojas de estilo
+│           └── knit.css                 # Estilos personalzados
 │
-├── infra/                    # Infraestructura como código
-│   ├── bicep o scripts/      # Plantillas Bicep/Az para Azure
-│   ├── pipelines/            # GitHub Actions / Azure DevOps (opcional)
-│   └── config/               # Variables de entorno 
+├── infra/                               # Infraestructura como código
+│   ├── bicep o scripts/                 # Plantillas Bicep/Az para Azure
+│   ├── pipelines/                       # GitHub Actions / Azure DevOps (opcional)
+│   └── config/                          # Variables de entorno 
 │
-├── docs/                     # Documentación
-│   ├── english/              # Colección en inglés
-│   ├── spanish/              # Colección en español
-│   ├── architecture.md       # Diagrama y explicación
-│   ├── accessibility.md      # Checklist de accesibilidad
-│   └── usage.md              # Cómo correr el proyecto
+├── docs/                                # Documentación
+│   ├── english/                         # Colección en inglés
+│   ├── spanish/                         # Colección en español
+│   ├── architecture.md                  # Diagrama y explicación
+│   ├── accessibility.md                 # Checklist de accesibilidad
+│   └── usage.md                         # Cómo correr el proyecto
 │
-└── README.md                 # Presentación / Guía rápida
+└── README.md                            # Presentación / Guía rápida
 ```
