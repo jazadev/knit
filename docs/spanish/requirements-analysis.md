@@ -42,7 +42,7 @@ Miembros de comunidad que:
 ### 7.1 Acceso centralizado a información
 
 - Plataforma con chatbot **moderado**.
-- Personalización e Identificación de audiencia por intereses, temas, edad, localidad, genero, lenguaje.
+- Personalización e Identificación de audiencia por intereses, temas, edad, país, estado, localidad, genero, lenguaje.
 - Canales de comunicación: email, SMS, redes sociales y podcast de audio.
 
 ### 7.2 Información oportuna
