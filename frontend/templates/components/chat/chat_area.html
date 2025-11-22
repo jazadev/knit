@@ -1,0 +1,229 @@
+<div id="chat-scroll-area" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 pt-16">
+
+    <!-- Bienvenida -->
+    <div x-show="currentChat.messages.length === 0"
+        class="flex flex-col items-center justify-center min-h-full pb-10 px-4">
+        <div class="text-center mb-10 space-y-4 animate-fade-in-up">
+            <!-- Logo SVG -->
+            <div class="flex justify-center mb-6 text-blue-600 dark:text-blue-400">
+                <div class="h-10 md:h-20 w-auto">
+                    <svg viewBox="0 0 2333 656" class="h-full w-auto" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g transform="matrix(1,0,0,1,-78.36,-298.36)">
+                            <g transform="matrix(1.37,0,0,1.37,-289.82,-313.56)">
+                                <path
+                                    d="M273,451C273,451 275.212,909.482 274,910C272.788,910.518 375,912 375,912L374,781L430,724L571,911L696,911L501,652L683,453L565,452L376,653L375,453L273,451Z" />
+                                <path
+                                    d="M744,452L746,910L825,911L824,564L905.59,662.322L985.286,744.771L1043,797L1101,752C1101,752 1029.218,688.01 1001.551,658.177C977.051,631.758 939.759,595.196 935,573C930.722,553.046 926.167,529.833 966,524C983.866,521.384 1041.743,555.606 1042,556C1042.257,556.394 1096,509 1096,509C1096,509 1095.463,503.932 1072.483,489.934C1054.931,479.242 1016.205,454.426 979,452C948.412,450.006 925.914,456.836 911.067,462.492C886.416,471.882 877.236,495.141 877,495C876.662,494.798 835,453 835,453L744,452Z" />
+                                <path
+                                    d="M1183,694L1234,748C1234,748 1155.113,837.808 1089,877C1022.887,916.192 1000.168,920.305 977,921C953.832,921.695 924.053,922.387 888,890C851.947,857.613 857.689,810.567 860,799C873.739,730.228 909,695 909,695C909,695 931.707,718.65 945.858,732.193C949.163,735.356 965.677,748.306 963.763,750.971C941.523,781.931 932.751,802.565 933.475,818.361C934.748,846.154 969.536,864.802 1029.506,832.382C1056.314,817.889 1090.491,790.627 1115.604,769.002C1156.146,734.09 1180.304,702.84 1183,694Z" />
+                                <path
+                                    d="M999,628L1051,683C1051,683 1157.547,553.328 1215,525C1334.784,465.939 1333.516,549.266 1272,624L1325,678C1325,678 1416.341,572.078 1359,496C1323.314,448.653 1262.505,442.039 1206,462C1170.539,474.527 1094.53,521.747 999,628Z" />
+                                <path
+                                    d="M1134,625C1134,625 1188.485,576.061 1191,575C1193.515,573.939 1308.802,693.23 1311,695C1313.198,696.77 1361.804,759.6 1362,760C1406.215,850.153 1345.841,922.442 1267.463,921.778C1242.754,921.569 1217.503,915.587 1185.559,897.067C1184.554,896.484 1139.912,868.02 1141.05,867.029C1159.681,850.811 1195,816 1195,816C1195,816 1270.279,873.542 1298,832C1331.093,782.408 1134,625 1134,625Z" />
+                                <path d="M1425,452L1425,911L1528,912L1524,452L1425,452Z" />
+                                <path
+                                    d="M1579,453L1580,534L1721,537L1720,912L1825,911L1826,537L1968,537L1967,453L1579,453Z" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto text-lg" x-text="t[lang].desc"></p>
+        </div>
+
+        <!-- Accesos rápidos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl animate-fade-in-up"
+            style="animation-delay: 0.1s;">
+            <button @click="sendMessage('Dime qué tipo de información ofreces sobre Eventos.')"
+                class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                <div
+                    class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg></div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_events">Eventos</h3>
+                    <p class="text-xs text-gray-500" x-text="t[lang].sub_events">Culturales</p>
+                </div>
+            </button>
+            <button @click="sendMessage('¿Sobre qué Instituciones Públicas puedes informarme?')"
+                class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                <div
+                    class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                        </path>
+                    </svg></div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_institutions">
+                        Instituciones</h3>
+                    <p class="text-xs text-gray-500" x-text="t[lang].sub_institutions">Directorios</p>
+                </div>
+            </button>
+            <button @click="sendMessage('¿En qué Servicios Públicos puedes orientarme?')"
+                class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                <div
+                    class="w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                        </path>
+                    </svg></div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_services">Servicios
+                    </h3>
+                    <p class="text-xs text-gray-500" x-text="t[lang].sub_services">Agua, luz</p>
+                </div>
+            </button>
+            <button @click="sendMessage('¿Qué Trámites me puedes ayudar a entender?')"
+                class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                <div
+                    class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                        </path>
+                    </svg></div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_procedures">Trámites
+                    </h3>
+                    <p class="text-xs text-gray-500" x-text="t[lang].sub_procedures">Padrón electoral, Actas</p>
+                </div>
+            </button>
+            <button @click="sendMessage('¿Cómo fomenta Civic Knit la participación en la Comunidad?')"
+                class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                <div
+                    class="w-10 h-10 rounded-lg bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg></div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_community">Comunidad
+                    </h3>
+                    <p class="text-xs text-gray-500" x-text="t[lang].sub_community">Participación</p>
+                </div>
+            </button>
+            <button @click="sendMessage('Explícame de forma educativa qué son los Procesos Cívicos.')"
+                class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                <div
+                    class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                        <path
+                            d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222">
+                        </path>
+                    </svg></div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_civic">Procesos
+                        Cívicos</h3>
+                    <p class="text-xs text-gray-500" x-text="t[lang].sub_civic">Educación</p>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- loop mensajes -->
+    <template x-for="(msg, index) in currentChat.messages" :key="index">
+        <div>
+
+            <template x-if="msg.role === 'user'">
+                <div class="flex justify-end mb-6 animate-fade-in-up group">
+                    <div class="flex flex-col items-end max-w-[85%] md:max-w-[75%]">
+
+                        <div class="bg-blue-600 text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-md">
+                            <p class="text-sm md:text-base leading-relaxed" x-text="msg.text"></p>
+                        </div>
+
+                        <div class="mt-1 mr-1">
+                            <button @click="speakText(msg.text)" type="button"
+                                class="flex items-center gap-1 px-2 py-1 text-xs font-medium transition-all rounded-md duration-200"
+                                :class="currentSpeakingText === msg.text.replace(/<[^>]*>?/gm, '').trim() 
+                ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 shadow-sm' 
+                : 'text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800'">
+
+                                <svg x-show="currentSpeakingText !== msg.text.replace(/<[^>]*>?/gm, '').trim()"
+                                    class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z">
+                                    </path>
+                                </svg>
+
+                                <svg x-show="currentSpeakingText === msg.text.replace(/<[^>]*>?/gm, '').trim()"
+                                    class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                                </svg>
+
+                                <span
+                                    x-text="currentSpeakingText === msg.text.replace(/<[^>]*>?/gm, '').trim() ? 'Detener' : 'Escuchar'"></span>
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+            </template>
+
+            <template x-if="msg.role === 'ai'">
+                <div class="flex justify-start gap-3 mb-6 animate-fade-in-up group">
+                    <div
+                        class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm mt-1">
+                        CK</div>
+
+                    <div class="flex flex-col max-w-[90%] md:max-w-[80%]">
+                        <div
+                            class="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-5 py-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-600">
+                            <div class="text-sm md:text-base leading-relaxed prose dark:prose-invert max-w-none"
+                                x-html="msg.text"></div>
+                        </div>
+
+                        <div class="mt-1 ml-1">
+                            <button @click="speakText(msg.text)" type="button"
+                                class="flex items-center gap-1 px-2 py-1 text-xs font-medium transition-all rounded-md duration-200"
+                                :class="currentSpeakingText === msg.text.replace(/<[^>]*>?/gm, '').trim() 
+                ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 shadow-sm' 
+                : 'text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800'">
+
+                                <svg x-show="currentSpeakingText !== msg.text.replace(/<[^>]*>?/gm, '').trim()"
+                                    class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z">
+                                    </path>
+                                </svg>
+
+                                <svg x-show="currentSpeakingText === msg.text.replace(/<[^>]*>?/gm, '').trim()"
+                                    class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                                </svg>
+
+                                <span
+                                    x-text="currentSpeakingText === msg.text.replace(/<[^>]*>?/gm, '').trim() ? 'Detener' : 'Escuchar'"></span>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <!-- loading -->
+    <div x-show="loading" class="flex justify-start gap-3 mb-6 opacity-60">
+        <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+        <div class="h-10 w-24 bg-gray-200 dark:bg-gray-700 rounded-2xl rounded-tl-none animate-pulse"></div>
+    </div>
+</div>

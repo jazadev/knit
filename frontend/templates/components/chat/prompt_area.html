@@ -1,0 +1,49 @@
+<div
+    class="p-4 pb-6 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
+    <form class="max-w-3xl mx-auto relative"
+        @submit.prevent="sendMessage($refs.inputMsg.value); $refs.inputMsg.value = ''">
+        <input x-ref="inputMsg" type="text" :placeholder="t[lang].placeholder"
+            class="w-full p-4 pr-24 rounded-2xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition-colors"
+            autocomplete="off" required>
+        <!-- microfono -->
+        <button type="button" @click="startRecording()" class="absolute right-14 top-3 p-2 rounded-xl transition-colors"
+            :class="
+            isRecording 
+                ? 'text-red-500 bg-red-100 animate-pulse' 
+                : (isPreparingRecording 
+                    ? 'text-yellow-500 bg-yellow-100 animate-pulse' 
+                    : 'text-gray-400 hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-600')
+        ">
+
+            <!-- Icono cuando está grabando -->
+            <svg x-show="isRecording" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z">
+                </path>
+            </svg>
+
+            <!-- Icono cuando se está preparando -->
+            <svg x-show="!isRecording && isPreparingRecording" class="w-6 h-6 animate-spin" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke-width="4"></circle>
+                <path class="opacity-75" stroke-linecap="round" stroke-width="4" d="M12 2a10 10 0 0110 10"></path>
+            </svg>
+
+            <!-- Icono normal del micrófono -->
+            <svg x-show="!isRecording && !isPreparingRecording" class="w-6 h-6" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 14a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4"></path>
+            </svg>
+        </button>
+
+        <button type="submit"
+            class="absolute right-3 top-3 p-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50"
+            :disabled="loading"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg></button>
+    </form>
+    <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-3" x-text="t[lang].disclaimer"></p>
+</div>

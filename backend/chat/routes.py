@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import Blueprint, request, jsonify, session
 from openai import AzureOpenAI
 from datetime import datetime, timezone, date
@@ -13,6 +14,33 @@ client = AzureOpenAI(
 )
 
 SYSTEM_PROMPT = f"Eres Civic Knit... FECHA: {datetime.now().strftime('%d/%m/%Y')}"
+
+# Ruta para obtener token de voz
+@chat_bp.route('/api/speech-token', methods=['GET'])
+def get_speech_token():
+    speech_key = os.getenv("AZURE_SPEECH_KEY")
+    speech_region = os.getenv("AZURE_SPEECH_REGION")
+
+    if not speech_key or not speech_region:
+        return jsonify({"error": "Faltan credenciales de voz"}), 500
+
+    # Azure pide el token a esta URL específica
+    fetch_token_url = f"https://{speech_region}.api.cognitive.microsoft.com/sts/v1.0/issueToken"
+    
+    headers = {
+        'Ocp-Apim-Subscription-Key': speech_key
+    }
+    
+    try:
+        response = requests.post(fetch_token_url, headers=headers)
+        access_token = str(response.text)
+        return jsonify({
+            "token": access_token, 
+            "region": speech_region
+        })
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Error obteniendo token de voz"}), 500
 
 @chat_bp.route('/api/chats', methods=['GET'])
 def get_chats():

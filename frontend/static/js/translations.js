@@ -69,6 +69,7 @@ window.CIVIC_DATA = {
         msg_goodbye: 'Fue un gusto acompañarte. Tu cuenta ha sido eliminada correctamente. ¡Hasta pronto!',
 
         privacy_title: 'Políticas de Privacidad',
+        privacy: 'Políticas de Privacidad',
         privacy_content: 'CivicKnit valora tu privacidad. No compartimos tu información personal con terceros. Los datos recopilados se utilizan exclusivamente para mejorar tu experiencia cívica y personalizar la información que recibes.',
 
         confirm_title: '¿Estás seguro?',
@@ -146,8 +147,9 @@ window.CIVIC_DATA = {
         keyword_delete: 'delete', 
         btn_confirm_delete: 'Confirm deletion',
         msg_goodbye: 'It was a pleasure helping you. Your account has been successfully deleted. See you soon!',
-
+       
         privacy_title: 'Privacy Policy',
+        privacy: 'Privacy Policy',
         privacy_content: 'CivicKnit values your privacy. We do not share your personal information with third parties. Data collected is used solely to enhance your civic experience and personalize the information you receive.',
         confirm_title: 'Are you sure?',
         confirm_yes: 'Yes, continue',

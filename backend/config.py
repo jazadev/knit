@@ -32,3 +32,7 @@ class Config:
     AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
     AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION")
     AZURE_DEPLOYMENT_NAME = os.getenv("AZURE_DEPLOYMENT_NAME")
+
+    # Azure Speech Services
+    AZURE_SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
+    AZURE_SPEECH_REGION = os.getenv("AZURE_SPEECH_REGION")
