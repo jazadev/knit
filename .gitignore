@@ -1,0 +1,39 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Entornos Virtuales (Tu carpeta env) ---
+env/
+venv/
+.venv/
+
+# --- Variables de Entorno y Secretos (MUY IMPORTANTE) ---
+.env
+.env.local
+instance/
+
+# --- IDEs y Editores ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Sistema Operativo ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Azure ---
+.funcignore
+app_service_settings.json
+
+# --- Logs ---
+*.log
+
+
+# --- Ignorar datos de sesión de Flask ---
+flask_session/
+flask_session_data/
+instance/
+.pytest_cache/
