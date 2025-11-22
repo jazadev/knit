@@ -1,0 +1,292 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="flex h-screen overflow-hidden">
+
+    <!-- Movil -->
+    <div x-show="mobileMenuOpen" 
+         @click="mobileMenuOpen = false"
+         x-transition.opacity
+         class="fixed inset-0 bg-gray-900/80 z-30 md:hidden backdrop-blur-sm">
+    </div>
+
+    <!-- sidebar -->
+    <aside class="fixed inset-y-0 left-0 z-40 w-64 flex flex-col transition-transform duration-300 transform md:translate-x-0 md:relative
+                  bg-gray-100 dark:bg-gray-900 
+                  border-r border-gray-200 dark:border-gray-700
+                  text-gray-900 dark:text-white h-screen shadow-2xl md:shadow-none"
+           :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+    >
+        <!-- Cerrar (Móvil) -->
+        <div class="md:hidden absolute top-2 right-2 z-50">
+             <button @click="mobileMenuOpen = false" class="p-2 text-gray-500 hover:text-red-500 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+        </div>
+
+        <!-- logo sidebar -->
+         <a href="/" class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors group">
+            
+            <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform flex-shrink-0">
+                <svg viewBox="0 0 869 645" class="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="matrix(1,0,0,1,-728.95,-304.56)">
+                        <g transform="matrix(1.37,0,0,1.37,-289.82,-313.56)">
+                            <path d="M744,452L746,910L825,911L824,564L905.59,662.322L985.286,744.771L1043,797L1101,752C1101,752 1029.218,688.01 1001.551,658.177C977.051,631.758 939.759,595.196 935,573C930.722,553.046 926.167,529.833 966,524C983.866,521.384 1041.743,555.606 1042,556C1042.257,556.394 1096,509 1096,509C1096,509 1095.463,503.932 1072.483,489.934C1054.931,479.242 1016.205,454.426 979,452C948.412,450.006 925.914,456.836 911.067,462.492C886.416,471.882 877.236,495.141 877,495C876.662,494.798 835,453 835,453L744,452Z"/>
+                        </g>
+                        <g transform="matrix(1.37,0,0,1.37,-289.82,-313.56)">
+                            <path d="M1183,694L1234,748C1234,748 1155.113,837.808 1089,877C1022.887,916.192 1000.168,920.305 977,921C953.832,921.695 924.053,922.387 888,890C851.947,857.613 857.689,810.567 860,799C873.739,730.228 909,695 909,695C909,695 931.707,718.65 945.858,732.193C949.163,735.356 965.677,748.306 963.763,750.971C941.523,781.931 932.751,802.565 933.475,818.361C934.748,846.154 969.536,864.802 1029.506,832.382C1056.314,817.889 1090.491,790.627 1115.604,769.002C1156.146,734.09 1180.304,702.84 1183,694Z"/>
+                        </g>
+                        <g transform="matrix(1.37,0,0,1.37,-289.82,-313.56)">
+                            <path d="M999,628L1051,683C1051,683 1157.547,553.328 1215,525C1334.784,465.939 1333.516,549.266 1272,624L1325,678C1325,678 1416.341,572.078 1359,496C1323.314,448.653 1262.505,442.039 1206,462C1170.539,474.527 1094.53,521.747 999,628Z"/>
+                        </g>
+                        <g transform="matrix(1.37,0,0,1.37,-289.82,-313.56)">
+                            <path d="M1134,625C1134,625 1188.485,576.061 1191,575C1193.515,573.939 1308.802,693.23 1311,695C1313.198,696.77 1361.804,759.6 1362,760C1406.215,850.153 1345.841,922.442 1267.463,921.778C1242.754,921.569 1217.503,915.587 1185.559,897.067C1184.554,896.484 1139.912,868.02 1141.05,867.029C1159.681,850.811 1195,816 1195,816C1195,816 1270.279,873.542 1298,832C1331.093,782.408 1134,625 1134,625Z"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            
+            <!-- 2. El Texto -->
+            <h1 class="font-bold text-lg tracking-wide text-gray-800 dark:text-white">CIVIC KNIT</h1>
+        </a>
+
+        <!-- nuevo chat -->
+        <div class="p-3 pb-0">
+            <button @click="createNewChat()" class="flex items-center justify-center gap-3 w-full px-3 py-3 rounded-xl text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg transition-all group">
+                <svg class="w-5 h-5 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span x-text="t[lang].new_chat">Nuevo Chat</span>
+            </button>
+        </div>
+
+        <!-- historial -->
+        <div class="flex-1 overflow-y-auto px-2 py-2 mt-2 custom-scrollbar" x-show="isLoggedIn">
+            <div class="flex items-center justify-between px-3 mb-2 mt-2">
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span x-text="t[lang].history">HISTORIAL</span>
+                </div>
+                <button @click="clearAllChats()" x-show="chats.length > 0" class="text-gray-400 hover:text-red-500 transition-colors" title="Borrar todo el historial">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            </div>
+            
+            <div class="space-y-1">
+                <template x-for="chat in chats" :key="chat.id">
+                    <div class="group flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer"
+                         :class="activeChatId === chat.id ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800'"
+                         @click="activeChatId = chat.id; mobileMenuOpen = false">
+                        
+                        <svg class="w-4 h-4 shrink-0 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        
+                        <span class="truncate flex-1" x-text="chat.title"></span>
+
+                        <button @click="deleteChat(chat.id, $event)" class="opacity-0 group-hover:opacity-100 hover:text-red-500 transition-opacity p-1" title="Eliminar">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </template>
+                
+                <div x-show="chats.length === 0" class="text-xs text-gray-400 px-3 italic py-2">
+                    No hay historial.
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-1" x-show="!isLoggedIn"></div>
+
+        <!-- footer -->
+        <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-700 space-y-2 bg-gray-50 dark:bg-gray-900/50">
+            
+            <!-- ajustes -->
+            <template x-if="isLoggedIn">
+                <button @click="showSettingsModal = true" class="flex items-center gap-3 w-full p-2 rounded-lg transition-colors text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 group">
+                    <svg class="w-5 h-5 text-gray-500 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    <span x-text="t[lang].settings">Ajustes</span>
+                </button>
+            </template>
+
+            <!-- sesion -->
+            <template x-if="!isLoggedIn">
+                <button @click="login()" class="flex items-center gap-3 w-full p-2 rounded-lg transition-colors text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 group">
+                    <svg class="w-5 h-5 text-gray-500 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                    <span x-text="t[lang].login">Iniciar Sesión</span>
+                </button>
+            </template>
+            
+            <template x-if="isLoggedIn">
+                <button @click="logout()" class="flex items-center gap-3 w-full p-2 rounded-lg transition-colors text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 group">
+                    <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                    <span x-text="t[lang].logout">Cerrar Sesión</span>
+                </button>
+            </template>
+
+            <!-- politicas de privacidad -->
+             <div class="pt-2 mt-2 border-t border-gray-200 dark:border-gray-700/50 text-center">
+                <a href="#" 
+                   @click.prevent="showPrivacyModal = true" 
+                   class="text-[10px] text-gray-400 hover:text-blue-500 hover:underline transition-colors" 
+                   x-text="(t[lang] && t[lang].privacy) ? t[lang].privacy : 'Política de Privacidad'">
+                   Política de Privacidad
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 flex flex-col relative h-full bg-white dark:bg-gray-800 transition-colors duration-300">
+        
+        <header class="absolute top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-20 bg-white dark:bg-gray-900 shadow-sm transition-colors duration-300">
+            <div class="md:hidden flex items-center">
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 -ml-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+            
+            <div class="hidden md:block"></div> 
+
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- notificaciones -->
+                <template x-if="isLoggedIn">
+                    <div class="relative" x-data="{ notifOpen: false }">
+                        <button @click="notifOpen = !notifOpen" class="relative w-9 h-9 flex items-center justify-center bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-300">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span x-show="hasUnread" class="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full border border-white dark:border-gray-800 animate-pulse"></span>
+                        </button>
+                        <div x-show="notifOpen" @click.away="notifOpen = false" x-transition.opacity class="fixed left-4 right-4 top-16 z-50 md:absolute md:left-auto md:right-0 md:top-auto md:mt-2 md:w-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/50">
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200 text-sm" x-text="t[lang].notifications_title"></h3>
+                                <span class="text-[10px] bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-bold" x-text="notifications.filter(n => !n.read).length + ' nuevas'"></span>
+                            </div>
+                            <div class="max-h-60 overflow-y-auto">
+                                <template x-for="notif in notifications.slice(0, 3)" :key="notif.id">
+                                    <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition border-b border-gray-50 dark:border-gray-700/50 cursor-pointer flex gap-3">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" :class="notif.read ? 'bg-gray-100 dark:bg-gray-700 text-gray-400' : 'bg-blue-100 dark:bg-blue-900 text-blue-600'"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                                        <div><p class="text-xs font-medium text-gray-800 dark:text-gray-200 leading-tight" x-text="notif.text"></p><p class="text-[10px] text-gray-400 mt-1" x-text="notif.time"></p></div>
+                                    </div>
+                                </template>
+                            </div>
+                            <button @click="showNotificationsModal = true; notifOpen = false" class="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold text-blue-600 dark:text-blue-400 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition group"><span x-text="t[lang].view_all"></span><svg class="w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></button>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- accesibilidad -->
+
+                <div class="flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm overflow-hidden divide-x divide-gray-200 dark:divide-gray-600 transition-colors">
+                    <button @click="adjustZoom(-10)" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg></button>
+                    <button @click="resetZoom()" class="px-2 py-1 text-xs font-mono font-bold min-w-[2.5rem] bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-300"><span x-text="zoomLevel + '%'"></span></button>
+                    <button @click="adjustZoom(10)" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
+                </div>
+
+                <button @click="toggleLang()" class="h-9 px-3 flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition font-bold text-xs text-gray-600 dark:text-gray-300 transition-colors">
+                    <span x-text="lang.toUpperCase()"></span>
+                </button>
+
+                <button @click="toggleTheme()" class="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-300 transition-colors">
+                    <span x-show="darkMode"><svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></span>
+                    <span x-show="!darkMode"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- chat -->
+        <div id="chat-scroll-area" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 pt-16">
+            
+            <!-- Bienvenida -->
+            <div x-show="currentChat.messages.length === 0" class="flex flex-col items-center justify-center min-h-full pb-10 px-4">
+                <div class="text-center mb-10 space-y-4 animate-fade-in-up">
+                    <!-- Logo SVG -->
+                    <div class="flex justify-center mb-6 text-blue-600 dark:text-blue-400">
+                        <div class="h-10 md:h-20 w-auto">
+                            <svg viewBox="0 0 2333 656" class="h-full w-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <g transform="matrix(1,0,0,1,-78.36,-298.36)">
+                                    <g transform="matrix(1.37,0,0,1.37,-289.82,-313.56)">
+                                        <path d="M273,451C273,451 275.212,909.482 274,910C272.788,910.518 375,912 375,912L374,781L430,724L571,911L696,911L501,652L683,453L565,452L376,653L375,453L273,451Z"/>
+                                        <path d="M744,452L746,910L825,911L824,564L905.59,662.322L985.286,744.771L1043,797L1101,752C1101,752 1029.218,688.01 1001.551,658.177C977.051,631.758 939.759,595.196 935,573C930.722,553.046 926.167,529.833 966,524C983.866,521.384 1041.743,555.606 1042,556C1042.257,556.394 1096,509 1096,509C1096,509 1095.463,503.932 1072.483,489.934C1054.931,479.242 1016.205,454.426 979,452C948.412,450.006 925.914,456.836 911.067,462.492C886.416,471.882 877.236,495.141 877,495C876.662,494.798 835,453 835,453L744,452Z"/>
+                                        <path d="M1183,694L1234,748C1234,748 1155.113,837.808 1089,877C1022.887,916.192 1000.168,920.305 977,921C953.832,921.695 924.053,922.387 888,890C851.947,857.613 857.689,810.567 860,799C873.739,730.228 909,695 909,695C909,695 931.707,718.65 945.858,732.193C949.163,735.356 965.677,748.306 963.763,750.971C941.523,781.931 932.751,802.565 933.475,818.361C934.748,846.154 969.536,864.802 1029.506,832.382C1056.314,817.889 1090.491,790.627 1115.604,769.002C1156.146,734.09 1180.304,702.84 1183,694Z"/>
+                                        <path d="M999,628L1051,683C1051,683 1157.547,553.328 1215,525C1334.784,465.939 1333.516,549.266 1272,624L1325,678C1325,678 1416.341,572.078 1359,496C1323.314,448.653 1262.505,442.039 1206,462C1170.539,474.527 1094.53,521.747 999,628Z"/>
+                                        <path d="M1134,625C1134,625 1188.485,576.061 1191,575C1193.515,573.939 1308.802,693.23 1311,695C1313.198,696.77 1361.804,759.6 1362,760C1406.215,850.153 1345.841,922.442 1267.463,921.778C1242.754,921.569 1217.503,915.587 1185.559,897.067C1184.554,896.484 1139.912,868.02 1141.05,867.029C1159.681,850.811 1195,816 1195,816C1195,816 1270.279,873.542 1298,832C1331.093,782.408 1134,625 1134,625Z"/>
+                                        <path d="M1425,452L1425,911L1528,912L1524,452L1425,452Z"/>
+                                        <path d="M1579,453L1580,534L1721,537L1720,912L1825,911L1826,537L1968,537L1967,453L1579,453Z"/>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto text-lg" x-text="t[lang].desc"></p>
+                </div>
+
+                <!-- Accesos rápidos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <button @click="sendMessage('Dime qué tipo de información ofreces sobre Eventos.')" class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                        <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>
+                        <div><h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_events">Eventos</h3><p class="text-xs text-gray-500" x-text="t[lang].sub_events">Culturales</p></div>
+                    </button>
+                    <button @click="sendMessage('¿Sobre qué Instituciones Públicas puedes informarme?')" class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                        <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>
+                        <div><h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_institutions">Instituciones</h3><p class="text-xs text-gray-500" x-text="t[lang].sub_institutions">Directorios</p></div>
+                    </button>
+                    <button @click="sendMessage('¿En qué Servicios Públicos puedes orientarme?')" class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                        <div class="w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 flex items-center justify-center group-hover:scale-110 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg></div>
+                        <div><h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_services">Servicios</h3><p class="text-xs text-gray-500" x-text="t[lang].sub_services">Agua, luz</p></div>
+                    </button>
+                    <button @click="sendMessage('¿Qué Trámites me puedes ayudar a entender?')" class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                        <div class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg></div>
+                        <div><h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_procedures">Trámites</h3><p class="text-xs text-gray-500" x-text="t[lang].sub_procedures">Padrón electoral, Actas</p></div>
+                    </button>
+                    <button @click="sendMessage('¿Cómo fomenta Civic Knit la participación en la Comunidad?')" class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                        <div class="w-10 h-10 rounded-lg bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 flex items-center justify-center group-hover:scale-110 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                        <div><h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_community">Comunidad</h3><p class="text-xs text-gray-500" x-text="t[lang].sub_community">Participación</p></div>
+                    </button>
+                    <button @click="sendMessage('Explícame de forma educativa qué son los Procesos Cívicos.')" class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all text-left">
+                        <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 flex items-center justify-center group-hover:scale-110 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg></div>
+                        <div><h3 class="font-semibold text-gray-800 dark:text-gray-200" x-text="t[lang].btn_civic">Procesos Cívicos</h3><p class="text-xs text-gray-500" x-text="t[lang].sub_civic">Educación</p></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- loop mensajes -->
+            <template x-for="(msg, index) in currentChat.messages" :key="index">
+                <div>
+                    <template x-if="msg.role === 'user'">
+                        <div class="flex justify-end mb-6 animate-fade-in-up">
+                            <div class="bg-blue-600 text-white px-5 py-3 rounded-2xl rounded-tr-none max-w-[85%] md:max-w-[75%] shadow-md">
+                                <p class="text-sm md:text-base leading-relaxed" x-text="msg.text"></p>
+                            </div>
+                        </div>
+                    </template>
+                    <template x-if="msg.role === 'ai'">
+                        <div class="flex justify-start gap-3 mb-6 animate-fade-in-up">
+                            <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm mt-1">CK</div>
+                            <div class="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-5 py-3 rounded-2xl rounded-tl-none max-w-[90%] md:max-w-[80%] shadow-sm border border-gray-100 dark:border-gray-600">
+                                <div class="text-sm md:text-base leading-relaxed prose dark:prose-invert max-w-none" x-html="msg.text"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- loading -->
+            <div x-show="loading" class="flex justify-start gap-3 mb-6 opacity-60">
+                <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                <div class="h-10 w-24 bg-gray-200 dark:bg-gray-700 rounded-2xl rounded-tl-none animate-pulse"></div>
+            </div>
+        </div>
+
+        <!-- prompt -->
+        <div class="p-4 pb-6 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
+            <form class="max-w-3xl mx-auto relative" @submit.prevent="sendMessage($refs.inputMsg.value); $refs.inputMsg.value = ''">
+                <input x-ref="inputMsg" type="text" :placeholder="t[lang].placeholder" class="w-full p-4 pr-14 rounded-2xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition-colors" autocomplete="off" required>
+                <button type="submit" class="absolute right-3 top-3 p-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50" :disabled="loading"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg></button>
+            </form>
+            <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-3" x-text="t[lang].disclaimer"></p>
+        </div>
+    </main>
+
+    <!-- modales -->
+    {% include 'components/modals/notifications.html' %}
+    {% include 'components/modals/settings.html' %}
+    {% include 'components/modals/privacy.html' %}
+
+</div>
+{% endblock %}

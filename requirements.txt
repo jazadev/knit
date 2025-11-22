@@ -1,0 +1,14 @@
+#Framework Web
+Flask
+Flask-Session
+
+#Variables de Entorno
+python-dotenv
+
+#Azure
+msal
+azure-cosmos
+openai
+
+# Utilerías
+requests

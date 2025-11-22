@@ -1,0 +1,223 @@
+<div x-show="showSettingsModal" style="display: none;" class="relative z-50" role="dialog" aria-modal="true">
+    
+    <div x-show="showSettingsModal" 
+         x-transition.opacity 
+         @click="showSettingsModal = false"
+         class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity">
+    </div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0"
+             @click.self="showSettingsModal = false">
+
+            <div x-show="showSettingsModal"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-gray-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-gray-200 dark:border-gray-700 flex flex-col max-h-[90vh]">
+                
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 shrink-0">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        <span x-text="t[lang].settings_title || 'Ajustes de Cuenta'"></span>
+                    </h3>
+                    <button @click="showSettingsModal = false" class="text-gray-400 hover:text-gray-500 dark:hover:text-white transition"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                </div>
+
+                <div class="px-6 py-6 overflow-y-auto custom-scrollbar pb-10">
+                    <div x-data="{ editing: false, backup: {} }" class="relative mb-8">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider" x-text="t[lang].profile_sec">PERFIL</h4>
+                            <button x-show="!editing" @click="editing = true; backup = JSON.parse(JSON.stringify(userProfile))" class="text-sm text-gray-500 hover:text-blue-500 underline" x-text="t[lang].btn_edit">Editar</button>
+                        </div>
+
+                        <div class="p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all" :class="editing ? 'ring-1 ring-blue-500 border-blue-500' : ''">
+                            
+                            <div x-show="!editing" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                <div><span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_name"></span><div class="font-semibold text-gray-900 dark:text-white truncate" x-text="userProfile.name"></div></div>
+                                <div><span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_email"></span><div class="font-semibold text-gray-900 dark:text-white truncate" x-text="userProfile.email"></div></div>
+                                <div>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_country + ' / ' + t[lang].lbl_state"></span>
+                                    <div class="font-semibold text-gray-900 dark:text-white truncate flex items-center gap-2">
+                                        <span x-text="userProfile.country === 'MX' ? 'México' : (userProfile.country === 'GT' ? 'Guatemala' : '')"></span>
+                                        <span x-show="userProfile.country && userProfile.state" class="text-gray-300 dark:text-gray-600">|</span>
+                                        <span x-text="userProfile.state === 'CDMX' ? 'Ciudad de México' : (userProfile.state === 'GUATE' ? 'Ciudad de Guatemala' : userProfile.state)"></span>
+                                    </div>
+                                </div>
+                                <div><span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_lang_plat"></span><div class="font-semibold text-gray-900 dark:text-white"><span x-text="userProfile.platformLang === 'en' ? 'English' : 'Español'"></span></div></div>
+                            </div>
+
+                            <div x-show="editing" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_name"></label>
+                                        <input x-model="userProfile.name" type="text" :class="errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'" class="w-full p-2.5 rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none transition-colors">
+                                        <span x-show="errors.name" class="text-xs text-red-500 mt-1" x-text="errors.name"></span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_email"></label>
+                                        <input x-model="userProfile.email" type="email" :class="errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'" class="w-full p-2.5 rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none transition-colors">
+                                        <span x-show="errors.email" class="text-xs text-red-500 mt-1" x-text="errors.email"></span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_age"></label><input x-model="userProfile.age" type="number" min="1" max="120" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none"></div>
+                                    <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_gender"></label><select x-model="userProfile.gender" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none cursor-pointer"><option value="male" x-text="t[lang].opt_male"></option><option value="female" x-text="t[lang].opt_female"></option><option value="other" x-text="t[lang].opt_other"></option></select></div>
+                                    <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_lang_plat"></label><select x-model="userProfile.platformLang" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none cursor-pointer"><option value="es">Español</option><option value="en">English</option></select></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_country"></label><select x-model="userProfile.country" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer"><option value="GT" x-text="t[lang].opt_gt"></option><option value="MX" x-text="t[lang].opt_mx"></option></select></div>
+                                    <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_state"></label><select x-model="userProfile.state" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer"><template x-for="st in availableStates" :key="st.code"><option :value="st.code" x-text="st.label"></option></template></select></div>
+                                </div>
+
+                                <div class="flex justify-end gap-3 pt-2 border-t border-gray-200 dark:border-gray-700 mt-2">
+                                    <button @click="userProfile = backup; editing = false; errors = {}" class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" x-text="t[lang].btn_cancel">Cancelar</button>
+                                    <button @click="saveProfile().then(() => { if(Object.keys(errors).length === 0) editing = false; })" class="px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded hover:bg-blue-700 shadow-sm" x-text="t[lang].btn_save">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-data="{ editing: false, backup: {} }" class="relative mb-8">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider" x-text="t[lang].prefs_sec">CANALES</h4>
+                            <button x-show="!editing" @click="editing = true; backup = JSON.parse(JSON.stringify(userProfile))" class="text-sm text-gray-500 hover:text-blue-500 underline" x-text="t[lang].btn_edit">Editar</button>
+                        </div>
+                        <div class="p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all" :class="editing ? 'ring-1 ring-blue-500 border-blue-500' : ''">
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 font-medium" x-text="t[lang].lbl_receive_via">Recibir por:</p>
+                            <div x-show="!editing" class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 rounded-full" :class="userProfile.channels.email ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-400'"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
+                                    <div class="text-sm text-gray-700 dark:text-gray-300" x-text="t[lang].lbl_email_channel">Email</div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 rounded-full" :class="userProfile.channels.sms ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-400'"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg></div>
+                                    <div class="text-sm text-gray-700 dark:text-gray-300" x-text="t[lang].lbl_sms_channel">SMS</div>
+                                    <span class="text-xs text-gray-500" x-text="userProfile.phone"></span>
+                                </div>
+                            </div>
+                            <div x-show="editing" class="space-y-4">
+                                <div class="flex gap-6">
+                                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                                        <input type="checkbox" x-model="userProfile.channels.email" class="w-5 h-5 text-blue-600 rounded border-gray-300 bg-gray-700 focus:ring-blue-500">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200" x-text="t[lang].lbl_email_channel">Email</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                                        <input type="checkbox" x-model="userProfile.channels.sms" class="w-5 h-5 text-blue-600 rounded border-gray-300 bg-gray-700 focus:ring-blue-500">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200" x-text="t[lang].lbl_sms_channel">SMS</span>
+                                    </label>
+                                </div>
+                                <div class="mt-2 transition-opacity duration-300" :class="!userProfile.channels.sms ? 'opacity-50' : ''">
+                                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_phone"></label>
+                                    <div class="flex gap-2">
+                                        <div class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 flex items-center"><span x-text="userProfile.country === 'MX' ? '+52' : '+502'"></span></div>
+                                        <input type="tel" x-model="userProfile.phone" :disabled="!userProfile.channels.sms" :maxlength="userProfile.country === 'MX' ? 10 : 8" :placeholder="t[lang].lbl_phone_placeholder" :class="errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'" class="flex-1 p-2 rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-white outline-none focus:ring-2 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-colors">
+                                    </div>
+                                    <span x-show="errors.phone" class="text-xs text-red-500 mt-1 block" x-text="errors.phone"></span>
+                                </div>
+                                <div class="flex justify-end gap-3 pt-2 border-t border-gray-200 dark:border-gray-700 mt-2">
+                                    <button @click="userProfile = backup; editing = false; errors = {}" class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" x-text="t[lang].btn_cancel">Cancelar</button>
+                                    <button @click="saveProfile().then(() => { if(Object.keys(errors).length === 0) editing = false; })" class="px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded hover:bg-blue-700 shadow-sm" x-text="t[lang].btn_save">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-data="{ editing: false, backup: {}, dropdownOpen: false }" class="relative">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider" x-text="t[lang].topics_sec">TEMAS</h4>
+                            <button x-show="!editing" @click="editing = true; backup = JSON.parse(JSON.stringify(userProfile))" class="text-sm text-gray-500 hover:text-blue-500 underline" x-text="t[lang].btn_edit">Editar</button>
+                        </div>
+                        <div class="p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all" :class="editing ? 'ring-1 ring-blue-500 border-blue-500' : ''">
+                            <div x-show="!editing">
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="(topicData, topicKey) in userProfile.topics" :key="topicKey">
+                                        <div x-show="topicData.enabled" class="flex items-center gap-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full px-3 py-1.5 shadow-sm transition hover:shadow-md">
+                                            <span class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wide" x-text="t[lang]['btn_' + topicKey] || topicKey"></span>
+                                            <div x-show="Object.values(topicData.subs).some(x => x)" class="flex items-center gap-1 pl-1 border-l border-gray-200 dark:border-gray-600">
+                                                <template x-for="(subVal, subKey) in topicData.subs" :key="subKey">
+                                                    <span x-show="subVal" class="text-[10px] font-medium text-gray-500 dark:text-gray-400 capitalize bg-gray-100 dark:bg-gray-600/50 px-1.5 py-0.5 rounded-md ml-1" x-text="t[lang]['lbl_' + subKey] || subKey"></span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <p x-show="Object.values(userProfile.topics).every(t => !t.enabled)" class="text-sm text-gray-400 italic">Ningún tema seleccionado.</p>
+                            </div>
+                            <div x-show="editing" class="space-y-4">
+                                <p class="text-sm text-gray-600 dark:text-gray-300" x-text="t[lang].topics_desc"></p>
+                                <div class="relative w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 overflow-hidden transition-all shadow-sm">
+                                    <div x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-[500px]" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 max-h-[500px]" x-transition:leave-end="opacity-0 max-h-0" class="border-t border-gray-200 dark:border-gray-600 overflow-y-auto max-h-[60vh] custom-scrollbar">
+                                        <template x-for="(topicData, topicKey) in userProfile.topics" :key="topicKey">
+                                            <div class="border-b border-gray-100 dark:border-gray-700/50 last:border-0">
+                                                <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors group">
+                                                    <label class="flex items-center cursor-pointer w-full">
+                                                        <div class="relative flex items-center">
+                                                            <input type="checkbox" x-model="userProfile.topics[topicKey].enabled" @change="toggleTopic(topicKey)" class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-700 transition-all checked:border-blue-600 checked:bg-blue-600 hover:border-blue-400">
+                                                            <svg class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 transition-opacity w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                                        </div>
+                                                        <span class="ml-3 font-bold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" x-text="t[lang]['btn_' + topicKey] || topicKey"></span>
+                                                    </label>
+                                                </div>
+                                                <div x-show="Object.keys(topicData.subs).length > 0" class="px-4 pb-3 grid grid-cols-2 gap-x-4 gap-y-2 bg-gray-50/30 dark:bg-gray-800/30" :class="!topicData.enabled ? 'opacity-50 grayscale' : ''">
+                                                     <template x-for="(subVal, subKey) in topicData.subs" :key="subKey">
+                                                        <label class="flex items-center cursor-pointer group rounded-lg px-2 py-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors ml-6">
+                                                             <div class="relative flex items-center">
+                                                                 <input type="checkbox" x-model="userProfile.topics[topicKey].subs[subKey]" @change="checkParent(topicKey)" class="peer h-4 w-4 cursor-pointer appearance-none rounded border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-700 transition-all checked:border-blue-500 checked:bg-blue-500">
+                                                                 <svg class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 transition-opacity w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                                             </div>
+                                                             <span class="ml-2 text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 capitalize select-none" x-text="t[lang]['lbl_' + subKey] || subKey"></span>
+                                                        </label>
+                                                     </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+                                    <button @click="userProfile = backup; editing = false; dropdownOpen = false; errors = {}" class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" x-text="t[lang].btn_cancel">Cancelar</button>
+                                    <button @click="saveProfile().then(() => { if(Object.keys(errors).length === 0) { editing = false; dropdownOpen = false; } })" class="px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded hover:bg-blue-700 shadow-sm" x-text="t[lang].btn_save">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-data="{ showDeleteConfirm: false, localInput: '' }" class="mt-8 pt-6 border-t border-red-100 dark:border-red-900/30">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider" x-text="t[lang].danger_zone">ZONA DE PELIGRO</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-text="t[lang].msg_delete_warning">Esta acción es irreversible.</p>
+                            </div>
+                            <button x-show="!showDeleteConfirm" @click="showDeleteConfirm = true; localInput = ''" class="px-4 py-2 text-xs font-bold text-red-600 border border-red-200 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                                <span x-text="t[lang].btn_delete_acc">Eliminar Cuenta</span>
+                            </button>
+                        </div>
+                        <div x-show="showDeleteConfirm" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-800/50">
+                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-2">
+                                <span x-text="t[lang].lbl_type_confirm">Escribe</span> <strong class="text-red-600 select-all" x-text="t[lang].keyword_delete"></strong> <span x-text="t[lang].lbl_to_confirm">para confirmar:</span>
+                            </label>
+                            <div class="flex gap-2">
+                                <input type="text" x-model="localInput" :placeholder="t[lang].keyword_delete" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none text-sm">
+                                <button @click="deleteAccount(localInput)" :disabled="localInput.trim().toLowerCase() !== t[lang].keyword_delete.toLowerCase()" class="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-lg shadow hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                                    <span x-text="t[lang].btn_confirm_delete || 'Eliminar'"></span>
+                                </button>
+                                <button @click="showDeleteConfirm = false; localInput = ''" class="px-3 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-900/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end shrink-0">
+                    <button @click="showSettingsModal = false" class="px-5 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition shadow-sm">
+                        Cerrar ventana
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
