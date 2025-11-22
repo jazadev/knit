@@ -6,7 +6,7 @@ window.CIVIC_DATA = {
         login: 'Iniciar Sesión',
         logout: 'Cerrar Sesión',
         hi_im: 'Hola, soy',
-        desc: 'Tu asistente neutral para conectar con tu ciudad (CDMX y Guatemala).',
+        desc: 'Tu asistente neutral para conectar con tu ciudad (CDMX).',
         
         btn_events: 'Eventos', sub_events: 'Culturales y locales',
         btn_institutions: 'Instituciones', sub_institutions: 'Directorios',
@@ -84,7 +84,7 @@ window.CIVIC_DATA = {
         login: 'Log In',
         logout: 'Log Out',
         hi_im: 'Hello, I am',
-        desc: 'Your neutral assistant to connect with your city (Mexico City & Guatemala).',
+        desc: 'Your neutral assistant to connect with your city (Mexico City).',
         
         btn_events: 'Events', sub_events: 'Cultural & Local',
         btn_institutions: 'Institutions', sub_institutions: 'Directories',
