@@ -101,14 +101,14 @@ window.civicApp = function () {
                 });
 
                 if (res.ok) {
-                    this.showToastMessage('✅ Guardado correctamente');
+                    this.showToastMessage('Guardado correctamente');
                     this.errors = {};
                 } else {
-                    this.showToastMessage('❌ Error al guardar', 'error');
+                    this.showToastMessage('Error al guardar', 'error');
                 }
             } catch (e) {
                 console.error(e);
-                this.showToastMessage('⚠️ Error de conexión', 'error');
+                this.showToastMessage('Error de conexión', 'error');
             }
         },
 
