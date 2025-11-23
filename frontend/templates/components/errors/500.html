@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+    <div class="max-w-lg w-full text-center space-y-6">
+        <div class="flex justify-center">
+            <div class="w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/40 flex items-center justify-center">
+                <svg class="w-9 h-9 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9" stroke-width="2" />
+                    <path stroke-linecap="round" stroke-width="2" d="M12 7v6" />
+                    <circle cx="12" cy="16" r="1.1" fill="currentColor" />
+                </svg>
+            </div>
+        </div>
+
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+            Ocurrió un error inesperado
+        </h1>
+
+        <p class="text-sm md:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+            Algo salió mal mientras procesábamos tu solicitud. Nuestro equipo revisará este error.
+            Intenta recargar la página o volver al chat principal.
+        </p>
+
+        <div class="pt-2">
+            <a href="{{ url_for('main.index') }}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-md hover:shadow-lg transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Volver al chat principal</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from flask_session import Session
 from .config import Config
 
@@ -31,5 +31,13 @@ def create_app(config_class=Config):
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(chat_bp)
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('/components/errors/404.html', user=None), 404
+
+    @app.errorhandler(500)
+    def internal_error(e):
+        return render_template('/components/errors/500.html', user=None), 500
 
     return app

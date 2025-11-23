@@ -76,7 +76,16 @@ window.CIVIC_DATA = {
         confirm_yes: 'Sí, continuar',
         confirm_no: 'Cancelar',
         msg_confirm_delete_chat: '¿Quieres borrar esta conversación? No podrás recuperarla.',
-        msg_confirm_delete_all: '¿Quieres borrar TODO tu historial? Se perderán todos los chats.'
+        msg_confirm_delete_all: '¿Quieres borrar TODO tu historial? Se perderán todos los chats.',
+
+        error_404_title: 'Página no encontrada',
+        error_404_msg: 'No encontramos la página que buscabas. Es posible que el enlace esté roto o haya sido movido.',
+        error_404_back: 'Volver al chat principal',
+
+        error_500_title: 'Error interno en el servidor',
+        error_500_msg: 'Ha ocurrido un problema inesperado. Nuestro asistente no pudo completar tu solicitud.',
+        error_500_back: 'Volver al chat principal',
+        error_500_retry: 'Reintentar'
     },
     en: {
         new_chat: 'New Chat',
@@ -155,6 +164,15 @@ window.CIVIC_DATA = {
         confirm_yes: 'Yes, continue',
         confirm_no: 'Cancel',
         msg_confirm_delete_chat: 'Do you want to delete this conversation? It cannot be recovered.',
-        msg_confirm_delete_all: 'Do you want to delete ALL history? All chats will be lost.'
+        msg_confirm_delete_all: 'Do you want to delete ALL history? All chats will be lost.',
+        
+        error_404_title: 'Page not found',
+        error_404_msg: 'We couldn’t find the page you were looking for. The link may be broken or the page may have been moved.',
+        error_404_back: 'Back to main chat',
+
+        error_500_title: 'Internal server error',
+        error_500_msg: 'An unexpected problem occurred. Our assistant could not complete your request.',
+        error_500_back: 'Back to main chat',
+        error_500_retry: 'Try again'
     }
 };
