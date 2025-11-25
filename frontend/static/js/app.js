@@ -257,9 +257,22 @@ window.civicApp = function () {
             }
         },
         // Text-to-Speech
+        cleanForTTS(text) {
+        return (text || '')
+            .replace(/<[^>]*>?/gm, '') // HTML tags
+            .replace(/```[\s\S]*?```/g, '') // code fences
+            .replace(/`([^`]+)`/g, '$1') // inline code
+            .replace(/\*\*([^*]+)\*\*/g, '$1') // **bold**
+            .replace(/\*([^*]+)\*/g, '$1') // *italic*
+            .replace(/#+\s?/g, '') // headings ###
+            .replace(/^\s*[-*+]\s+/gm, '') // bullets
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // [text](url)
+            .replace(/\s+/g, ' ')
+            .trim();
+        },
         async speakText(text) {
             // Normalizamos texto para usarlo como ID del mensaje
-            const cleanText = text.replace(/<[^>]*>?/gm, '').trim();
+            const cleanText = this.cleanForTTS(text);
 
             // valida si es el mismo texto que ya está sonando
             const isSame = (this.currentSpeakingText === cleanText);
