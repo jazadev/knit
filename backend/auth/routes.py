@@ -15,9 +15,14 @@ def _build_msal_app(cache=None):
 
 @auth_bp.route('/api/login')
 def login():
+    redirect_uri = url_for("auth.authorized", _external=True)
+    
+    if "azurewebsites.net" in redirect_uri and redirect_uri.startswith("http://"):
+        redirect_uri = redirect_uri.replace("http://", "https://")
+
     session["flow"] = _build_msal_app().initiate_auth_code_flow(
         [os.getenv("SCOPE")],
-        redirect_uri="http://localhost:5001/getAToken"
+        redirect_uri=redirect_uri
     )
     return redirect(session["flow"]["auth_uri"])
 
