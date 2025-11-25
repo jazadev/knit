@@ -1,4 +1,8 @@
+import mimetypes
 from backend import create_app
+
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
 
 app = create_app()
 
