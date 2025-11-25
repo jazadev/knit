@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template
 from flask_session import Session
 from .config import Config
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Inicializamos extensiones globalmente
 sess = Session()
@@ -20,6 +21,8 @@ def create_app(config_class=Config):
                 static_folder=static_dir)
     
     app.config.from_object(config_class)
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     sess.init_app(app)
 
