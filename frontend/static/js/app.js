@@ -35,6 +35,7 @@ window.civicApp = function () {
         synthesizer: null,
         player: null,
         isPreparingRecording: false,
+        speechRecognizer: null,
 
         showToastMessage(msg, type = 'success') {
             this.toast = { show: true, message: msg, type: type };
@@ -142,8 +143,38 @@ window.civicApp = function () {
         },
         // Speech-to-Text
         async startRecording() {
-            // Evitar doble clic o que se dispare mientras se prepara/graba
-            if (this.isRecording || this.isPreparingRecording) return;
+            // togle recording off si ya está grabando
+            if (this.isRecording && this.speechRecognizer) {
+                try {
+                    this.isPreparingRecording = false;
+
+                    this.speechRecognizer.stopContinuousRecognitionAsync(
+                        () => {
+                            this.isRecording = false;
+                            this.speechRecognizer.close();
+                            this.speechRecognizer = null;
+                        },
+                        (err) => {
+                            console.error(err);
+                            this.isRecording = false;
+                            this.speechRecognizer.close();
+                            this.speechRecognizer = null;
+                            this.showToastMessage('Error al detener el micrófono', 'error');
+                        }
+                    );
+                } catch (e) {
+                    console.error(e);
+                    this.isRecording = false;
+                    if (this.speechRecognizer) {
+                        this.speechRecognizer.close();
+                        this.speechRecognizer = null;
+                    }
+                }
+                return;
+            }
+
+            // Si está preparando, no hacemos nada
+            if (this.isPreparingRecording) return;
 
             this.isPreparingRecording = true;
 
@@ -168,50 +199,63 @@ window.civicApp = function () {
                 speechConfig.speechRecognitionLanguage = recogLang;
 
                 const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-                const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+                this.speechRecognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+                // cuando reconoce una frase completa
+                this.speechRecognizer.recognized = (s, e) => {
+                    if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
+                        const newText = (e.result.text || '').trim();
+                        console.log('Texto reconocido:', newText);
 
-                // delay antes de iniciar reconocimiento para que usuario vea animación
-                setTimeout(() => {
-                    this.isPreparingRecording = false;
-                    this.isRecording = true;
-
-                    recognizer.recognizeOnceAsync(
-                        result => {
-                            this.isRecording = false;
-
-                            if (result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
-                                console.log('Texto reconocido crudo:', result.text);
-                                const newText = (result.text || '').trim();
-
-                                if (newText) {
-                                    const current = this.$refs.inputMsg.value || '';
-                                    this.$refs.inputMsg.value = (current ? current + ' ' : '') + newText;
-                                    this.$refs.inputMsg.focus();
-                                }
-                            } else {
-                                this.showToastMessage('No te escuché bien', 'error');
-                            }
-
-                            recognizer.close();
-                        },
-                        err => {
-                            this.isRecording = false;
-                            console.error(err);
-                            this.showToastMessage('Error de micrófono', 'error');
-                            recognizer.close();
+                        if (newText) {
+                            const current = this.$refs.inputMsg.value || '';
+                            this.$refs.inputMsg.value = (current ? current + ' ' : '') + newText;
+                            this.$refs.inputMsg.focus();
                         }
-                    );
-                }, 300); // el usuario ve la animación y luego ya puede hablar, mejora el reconocimiento
+                    }
+                };
+
+                this.speechRecognizer.canceled = (s, e) => {
+                    console.warn('Reconocimiento cancelado:', e);
+                };
+
+                this.speechRecognizer.sessionStopped = (s, e) => {
+                    console.log('Sesión de reconocimiento detenida');
+                    this.isRecording = false;
+                    if (this.speechRecognizer) {
+                        this.speechRecognizer.close();
+                        this.speechRecognizer = null;
+                    }
+                };
+
+                // iniciar reconocimiento continuo
+                this.speechRecognizer.startContinuousRecognitionAsync(
+                    () => {
+                        this.isPreparingRecording = false;
+                        this.isRecording = true;
+                    },
+                    (err) => {
+                        console.error(err);
+                        this.isPreparingRecording = false;
+                        this.isRecording = false;
+                        if (this.speechRecognizer) {
+                            this.speechRecognizer.close();
+                            this.speechRecognizer = null;
+                        }
+                        this.showToastMessage('Error iniciando micrófono', 'error');
+                    }
+                );
 
             } catch (e) {
                 console.error(e);
                 this.isPreparingRecording = false;
                 this.isRecording = false;
+                if (this.speechRecognizer) {
+                    this.speechRecognizer.close();
+                    this.speechRecognizer = null;
+                }
                 this.showToastMessage('Error iniciando voz', 'error');
             }
         },
-
-
         // Text-to-Speech
         async speakText(text) {
             // Normalizamos texto para usarlo como ID del mensaje
