@@ -58,9 +58,9 @@ Miembros de comunidad que:
 
 ## **8. Temas que Atiende**
 
-- **Política local**: perfiles de representantes y candidatos, iniciativas, logros y declaraciones oficiales.
-- **Eventos**: políticos, culturales, tecnológicos y especializados.
-- **Servicios públicos**: agua, energía, residuos, infraestructura, salud, educación, cultura, deporte, seguridad, trámites administrativos y electorales, transporte, mercados y vivienda.
+- **Política local**: reponsabilidades, perrogativas, iniciativas, logros y declaraciones oficiales de funcionarios, representantes y candidatos a representación
+- **Eventos**: políticos, culturales, tecnológicos y especializados
+- **Servicios públicos**: agua, energía, residuos, infraestructura, salud, educación, cultura, deporte, seguridad, trámites administrativos y electorales, transporte, mercados y vivienda
 
 ## **9. Principios y Lineamientos**
 
