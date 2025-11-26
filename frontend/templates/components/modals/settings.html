@@ -39,13 +39,19 @@
                                 <div><span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_email"></span><div class="font-semibold text-gray-900 dark:text-white truncate" x-text="userProfile.email"></div></div>
                                 <div>
                                     <span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_country + ' / ' + t[lang].lbl_state"></span>
+                                    
                                     <div class="font-semibold text-gray-900 dark:text-white truncate flex items-center gap-2">
-                                        <span x-text="userProfile.country === 'MX' ? 'México' : (userProfile.country === 'GT' ? 'Guatemala' : '')"></span>
-                                        <span x-show="userProfile.country && userProfile.state" class="text-gray-300 dark:text-gray-600">|</span>
-                                        <span x-text="userProfile.state === 'CDMX' ? 'Ciudad de México' : (userProfile.state === 'GUATE' ? 'Ciudad de Guatemala' : userProfile.state)"></span>
+                                        <span>México</span>
+                                        <span x-show="userProfile.state" class="text-gray-300 dark:text-gray-600">|</span>
+                                        <span x-text="userProfile.state === 'CDMX' ? 'Ciudad de México' : userProfile.state"></span>
                                     </div>
                                 </div>
-                                <div><span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_lang_plat"></span><div class="font-semibold text-gray-900 dark:text-white"><span x-text="userProfile.platformLang === 'en' ? 'English' : 'Español'"></span></div></div>
+                                <div>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400 mb-1" x-text="t[lang].lbl_lang_plat"></span>
+                                    <div class="font-semibold text-gray-900 dark:text-white">
+                                        <span x-text="userProfile.platformLang === 'en' ? 'English' : (userProfile.platformLang === 'fr' ? 'Français' : 'Español')"></span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div x-show="editing" class="space-y-4">
@@ -64,10 +70,26 @@
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_age"></label><input x-model="userProfile.age" type="number" min="1" max="120" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none"></div>
                                     <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_gender"></label><select x-model="userProfile.gender" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none cursor-pointer"><option value="male" x-text="t[lang].opt_male"></option><option value="female" x-text="t[lang].opt_female"></option><option value="other" x-text="t[lang].opt_other"></option></select></div>
-                                    <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_lang_plat"></label><select x-model="userProfile.platformLang" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none cursor-pointer"><option value="es">Español</option><option value="en">English</option></select></div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_lang_plat"></label>
+                                        
+                                        <select x-model="userProfile.platformLang" 
+                                                @change="setLanguage($el.value)"
+                                                class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 outline-none cursor-pointer">
+                                            <option value="es">Español</option>
+                                            <option value="en">English</option>
+                                            <option value="fr">Français</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_country"></label><select x-model="userProfile.country" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer"><option value="GT" x-text="t[lang].opt_gt"></option><option value="MX" x-text="t[lang].opt_mx"></option></select></div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_country"></label>
+                                        <div class="w-full p-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-not-allowed flex items-center gap-2">
+                                            <span>🇲🇽</span> México
+                                        </div>
+                                    </div>
+                                    
                                     <div><label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_state"></label><select x-model="userProfile.state" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer"><template x-for="st in availableStates" :key="st.code"><option :value="st.code" x-text="st.label"></option></template></select></div>
                                 </div>
 
@@ -111,8 +133,10 @@
                                 <div class="mt-2 transition-opacity duration-300" :class="!userProfile.channels.sms ? 'opacity-50' : ''">
                                     <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1" x-text="t[lang].lbl_phone"></label>
                                     <div class="flex gap-2">
-                                        <div class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 flex items-center"><span x-text="userProfile.country === 'MX' ? '+52' : '+502'"></span></div>
-                                        <input type="tel" x-model="userProfile.phone" :disabled="!userProfile.channels.sms" :maxlength="userProfile.country === 'MX' ? 10 : 8" :placeholder="t[lang].lbl_phone_placeholder" :class="errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'" class="flex-1 p-2 rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-white outline-none focus:ring-2 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-colors">
+                                        <div class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-500 flex items-center">
+                                            <span>+52</span>
+                                        </div>
+                                        <input type="tel" x-model="userProfile.phone" :disabled="!userProfile.channels.sms" maxlength="10" :placeholder="t[lang].lbl_phone_placeholder" :class="errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'" class="flex-1 p-2 rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-white outline-none focus:ring-2 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-colors">
                                     </div>
                                     <span x-show="errors.phone" class="text-xs text-red-500 mt-1 block" x-text="errors.phone"></span>
                                 </div>
@@ -212,8 +236,9 @@
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-900/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end shrink-0">
-                    <button @click="showSettingsModal = false" class="px-5 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition shadow-sm">
-                        Cerrar ventana
+                    <button @click="showSettingsModal = false" 
+                            class="px-5 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition shadow-sm"
+                            x-text="t[lang].btn_close || 'Cerrar'">
                     </button>
                 </div>
 

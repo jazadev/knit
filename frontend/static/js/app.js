@@ -3,6 +3,7 @@ window.civicApp = function () {
         darkMode: localStorage.getItem('theme') === 'dark',
         zoomLevel: parseInt(localStorage.getItem('zoomLevel')) || 100,
         lang: localStorage.getItem('lang') || 'es',
+        langOpen: false,
         isLoggedIn: !!window.SERVER_USER,
         mobileMenuOpen: false,
         t: window.CIVIC_DATA || {},
@@ -22,7 +23,7 @@ window.civicApp = function () {
             age: window.SERVER_USER?.dbProfile?.age || '',
             gender: window.SERVER_USER?.dbProfile?.gender || '',
             platformLang: window.SERVER_USER?.dbProfile?.platformLang || 'es',
-            country: window.SERVER_USER?.dbProfile?.country || '',
+            country: window.SERVER_USER?.dbProfile?.country || 'MX',
             state: window.SERVER_USER?.dbProfile?.state || '',
             phone: window.SERVER_USER?.dbProfile?.phone || '',
             channels: window.SERVER_USER?.dbPreferences?.notifications || { email: false, sms: false },
@@ -49,9 +50,12 @@ window.civicApp = function () {
         },
 
         updateLocationLogic() {
-            if (this.userProfile.country === 'MX') { this.availableStates = [{ code: 'CDMX', label: 'Ciudad de México' }]; }
-            else if (this.userProfile.country === 'GT') { this.availableStates = [{ code: 'GUATE', label: 'Ciudad de Guatemala' }]; }
-            else { this.availableStates = []; }
+            // Siempre asumimos MX por defecto por demo
+            this.availableStates = [{ code: 'CDMX', label: 'Ciudad de México' }];
+            
+            if (this.userProfile.country !== 'MX') {
+                this.userProfile.country = 'MX';
+            }
 
             if (this.userProfile.country && this.availableStates.length > 0) {
                 const isValid = this.availableStates.some(s => s.code === this.userProfile.state);
@@ -59,6 +63,14 @@ window.civicApp = function () {
             } else if (!this.userProfile.country) {
                 this.userProfile.state = '';
             }
+        },
+        // gestionar el cambio de idioma
+        setLanguage(newLang) {
+            this.lang = newLang;
+            this.userProfile.platformLang = newLang;
+            this.langOpen = false; 
+            localStorage.setItem('lang', newLang);
+            this.updateLocationLogic(); 
         },
 
         toggleTopic(key) { let isEnabled = this.userProfile.topics[key].enabled; let subs = this.userProfile.topics[key].subs; for (let subKey in subs) { subs[subKey] = isEnabled; } },
@@ -79,7 +91,7 @@ window.civicApp = function () {
             }
 
             if (this.userProfile.channels.sms) {
-                const maxLen = this.userProfile.country === 'MX' ? 10 : 8;
+                const maxLen = 10; // fijo solo para México por demo
                 const currentLen = this.userProfile.phone ? this.userProfile.phone.length : 0;
                 if (currentLen === 0) {
                     this.errors.phone = 'Requerido'; isValid = false;
@@ -92,7 +104,7 @@ window.civicApp = function () {
 
         async saveProfile() {
             if (!this.validateForm()) {
-                this.showToastMessage('Revisa los errores marcados en rojo', 'error');
+                this.showToastMessage(this.t[this.lang].toast_error_form, 'error');
                 return;
             }
 
@@ -102,14 +114,14 @@ window.civicApp = function () {
                 });
 
                 if (res.ok) {
-                    this.showToastMessage('Guardado correctamente');
+                    this.showToastMessage(this.t[this.lang].toast_success_save);
                     this.errors = {};
                 } else {
-                    this.showToastMessage('Error al guardar', 'error');
+                    this.showToastMessage(this.t[this.lang].toast_error_save, 'error');
                 }
             } catch (e) {
                 console.error(e);
-                this.showToastMessage('Error de conexión', 'error');
+                this.showToastMessage(this.t[this.lang].toast_error_conn, 'error');
             }
         },
 
@@ -131,14 +143,14 @@ window.civicApp = function () {
                         }, 2500);
 
                     } else {
-                        this.showToastMessage('Error al eliminar cuenta', 'error');
+                        this.showToastMessage(this.t[this.lang].toast_error_del_acc, 'error');
                     }
                 } catch (e) {
                     console.error(e);
-                    this.showToastMessage('Error de conexión', 'error');
+                    this.showToastMessage(this.t[this.lang].toast_error_conn, 'error');
                 }
             } else {
-                this.showToastMessage('Palabra de confirmación incorrecta', 'error');
+                this.showToastMessage(this.t[this.lang].toast_error_keyword, 'error');
             }
         },
         // Speech-to-Text
@@ -159,7 +171,7 @@ window.civicApp = function () {
                             this.isRecording = false;
                             this.speechRecognizer.close();
                             this.speechRecognizer = null;
-                            this.showToastMessage('Error al detener el micrófono', 'error');
+                            this.showToastMessage(this.t[this.lang].toast_error_mic_stop, 'error');
                         }
                     );
                 } catch (e) {
@@ -193,8 +205,8 @@ window.civicApp = function () {
                 let recogLang = 'es-MX';
                 if (this.userProfile.platformLang === 'en') {
                     recogLang = 'en-US';
-                } else {
-                    recogLang = this.userProfile.country === 'MX' ? 'es-MX' : 'es-ES';
+                } else if (this.userProfile.platformLang === 'fr') {
+                    recogLang = 'fr-FR';
                 }
                 speechConfig.speechRecognitionLanguage = recogLang;
 
@@ -241,7 +253,7 @@ window.civicApp = function () {
                             this.speechRecognizer.close();
                             this.speechRecognizer = null;
                         }
-                        this.showToastMessage('Error iniciando micrófono', 'error');
+                        this.showToastMessage(this.t[this.lang].toast_error_mic_start, 'error');
                     }
                 );
 
@@ -253,7 +265,7 @@ window.civicApp = function () {
                     this.speechRecognizer.close();
                     this.speechRecognizer = null;
                 }
-                this.showToastMessage('Error iniciando voz', 'error');
+                this.showToastMessage(this.t[this.lang].toast_error_voice, 'error');
             }
         },
         // Text-to-Speech
@@ -319,6 +331,8 @@ window.civicApp = function () {
 
                 if (this.userProfile.platformLang === 'en') {
                     speechConfig.speechSynthesisVoiceName = 'en-US-AvaNeural';
+                } else if (this.userProfile.platformLang === 'fr') {
+                    speechConfig.speechSynthesisVoiceName = 'fr-FR-DeniseNeural';
                 } else {
                     speechConfig.speechSynthesisVoiceName = 'es-MX-DaliaNeural';
                 }
@@ -364,12 +378,12 @@ window.civicApp = function () {
                             this.synthesizer = null;
                         }
                         this.player = null;
-                        this.showToastMessage('Error de audio', 'error');
+                        this.showToastMessage(this.t[this.lang].toast_error_audio, 'error');
                     }
                 );
             } catch (e) {
                 console.error(e);
-                this.showToastMessage('Error de audio', 'error');
+                this.showToastMessage(this.t[this.lang].toast_error_audio, 'error');
                 this.isSpeaking = false;
                 this.currentSpeakingText = null;
                 if (this.synthesizer) {
@@ -443,9 +457,9 @@ window.civicApp = function () {
                     try {
                         const res = await fetch('/api/chats', { method: 'DELETE' });
                         if (!res.ok) throw new Error('Error deleting all');
-                        this.showToastMessage('Historial eliminado');
+                        this.showToastMessage(this.t[this.lang].toast_success_history);
                     } catch (e) {
-                        this.showToastMessage('Error al borrar historial', 'error');
+                        this.showToastMessage(this.t[this.lang].toast_error_history, 'error');
                         return;
                     }
                 }
@@ -481,7 +495,7 @@ window.civicApp = function () {
                 });
                 const data = await res.json();
                 chat.messages.push({ role: 'ai', text: data.response });
-            } catch (error) { chat.messages.push({ role: 'ai', text: 'Error de conexión' }); }
+            } catch (error) { chat.messages.push({ role: 'ai', text: this.t[this.lang].toast_error_conn }); }
             finally {
                 this.loading = false;
                 this.scrollToBottom();
