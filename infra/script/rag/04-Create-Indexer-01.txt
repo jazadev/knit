@@ -1,0 +1,143 @@
+export INDEXER_JSON='{
+  "name": "'"$IDX_HISTORIC"'",
+  "dataSourceName": "'"$DS_HISTORIC"'",
+  "skillsetName": "'"$SKILLSET_NAME"'",
+  "targetIndexName": "'"$INDEX_1"'",
+  "parameters": {
+    "configuration": {
+      "dataToExtract": "contentAndMetadata",
+      "parsingMode": "default" 
+    }
+  },
+  "fieldMappings": [
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "filepath" },
+    { "sourceFieldName": "metadata_storage_name", "targetFieldName": "source" },
+    { "sourceFieldName": "metadata_storage_last_modified", "targetFieldName": "lastUpdated" },
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "id", "mappingFunction": { "name": "base64Encode" } }
+  ],
+  /* JSON del Indexer para el Índice Plano */
+  "outputFieldMappings": [
+      // Mapea la colección de chunks a los campos de contenido y vector del documento raíz
+      { 
+          "sourceFieldName": "/document/pages_of_chunks/*/text", 
+          "targetFieldName": "content" 
+      },
+      { 
+          "sourceFieldName": "/document/pages_of_chunks/*/vector_embedding", 
+          "targetFieldName": "embedding" 
+      },
+      // Mapea metadata (ej. source_collection) al campo raíz
+      { 
+          "sourceFieldName": "metadata_storage_name", 
+          "targetFieldName": "source_collection"
+          // No se usa mappingFunction aquí si se mapea a campo plano simple.
+      }
+    ],
+    "isBuffered": null,
+    "parameters": {
+      "batchSize": 100,
+      "maxFailedItemsPerBatch": 0,
+      "maxFailedItems": 0,
+      "configuration": {
+          "dataToExtract": "contentAndMetadata",
+          "parsingMode": "default"
+      }
+    },
+    // La parte crucial para el Indexer en índice plano es el 'context' en el Skillset, 
+    // que ahora el Indexer debe adoptar.
+    "fieldMappings": [
+    // Mapeos al nivel del documento raíz, sin cambios
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "filepath" },
+    { "sourceFieldName": "metadata_storage_name", "targetFieldName": "source" },
+    { "sourceFieldName": "metadata_storage_last_modified", "targetFieldName": "lastUpdated" },
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "id", "mappingFunction": { "name": "base64Encode" } }
+  ],
+  "schedule": {"interval": "PT24H"}
+}'
+
+
+# Para el Indexer Histórico
+curl -X PUT "$SEARCH_ENDPOINT/indexers/$IDX_HISTORIC?api-version=$API_VERSION" \
+-H "Content-Type: application/json" \
+-H "api-key: $SEARCH_ADMIN_KEY" \
+-d "$INDEXER_JSON"
+
+
+curl -X PUT "$SEARCH_ENDPOINT/indexers/$IDX_HISTORIC?api-version=$API_VERSION" \
+-H "Content-Type: application/json" \
+-H "api-key: $SEARCH_ADMIN_KEY" \
+-d '{
+  "name": "'"$IDX_HISTORIC"'",
+  "dataSourceName": "'"$DS_HISTORIC"'",
+  "skillsetName": "'"$SKILLSET_NAME"'",
+  "targetIndexName": "'"$INDEX_1"'",
+  "parameters": {
+    "configuration": {
+      "dataToExtract": "contentAndMetadata",
+      "parsingMode": "default" 
+    }
+  },
+  "fieldMappings": [
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "filepath" },
+    { "sourceFieldName": "metadata_storage_name", "targetFieldName": "source" },
+    { "sourceFieldName": "metadata_storage_last_modified", "targetFieldName": "lastUpdated" },
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "id", "mappingFunction": { "name": "base64Encode" } }
+  ],
+  /* JSON del Indexer para el Índice Plano */
+  "outputFieldMappings": [
+    // Mapea la colección de chunks a los campos de contenido y vector del documento raíz
+      { 
+          "sourceFieldName": "/document/pages_of_chunks/*/text", 
+          "targetFieldName": "content" 
+      },
+      { 
+          "sourceFieldName": "/document/pages_of_chunks/*/vector_embedding", 
+          "targetFieldName": "embedding" 
+      },
+      // Mapea metadata (ej. source_collection) al campo raíz
+      { 
+          "sourceFieldName": "metadata_storage_name", 
+          "targetFieldName": "source_collection"
+          // No se usa mappingFunction aquí si se mapea a campo plano simple.
+      }
+    ],
+    "isBuffered": null,
+    "parameters": {
+      "batchSize": 100,
+      "maxFailedItemsPerBatch": 0,
+      "maxFailedItems": 0,
+      "configuration": {
+          "dataToExtract": "contentAndMetadata",
+          "parsingMode": "default"
+      }
+    },
+    // La parte crucial para el Indexer en índice plano es el 'context' en el Skillset, 
+    // que ahora el Indexer debe adoptar.
+    "fieldMappings": [
+    // Mapeos al nivel del documento raíz, sin cambios
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "filepath" },
+    { "sourceFieldName": "metadata_storage_name", "targetFieldName": "source" },
+    { "sourceFieldName": "metadata_storage_last_modified", "targetFieldName": "lastUpdated" },
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "id", "mappingFunction": { "name": "base64Encode" } }
+  ],
+  "schedule": {"interval": "PT24H"}
+}'
+
+
+curl -X POST "$SEARCH_ENDPOINT/indexers/$IDX_HISTORIC?api-version=$API_VERSION" \
+-H "Content-Type: application/json" \
+-H "api-key: $SEARCH_ADMIN_KEY" \
+-d '{
+  "name": (required) String that uniquely identifies the indexer,
+  "dataSourceName": (required) String indicated which existing data source to use,
+  "targetIndexName": (required) String,
+  "parameters": {
+    "batchSize": null,
+    "maxFailedItems": null,
+    "maxFailedItemsPerBatch": null,
+    "configuration": {
+        "executionEnvironment": "standard"
+    }
+  },
+  "fieldMappings": [ optional unless there are field discrepancies that need resolution]
+}'

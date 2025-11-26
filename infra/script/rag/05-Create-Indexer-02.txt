@@ -1,0 +1,36 @@
+curl -X PUT "$SEARCH_ENDPOINT/indexers/$IDX_CURRENT?api-version=$API_VERSION" \
+-H "Content-Type: application/json" \
+-H "api-key: $SEARCH_ADMIN_KEY" \
+-d '{
+  "name": "'"$IDX_CURRENT"'",
+  "dataSourceName": "'"$DS_CURRENT"'",
+  "skillsetName": "'"$SKILLSET_NAME"'",
+  "targetIndexName": "'"$INDEX_2"'",
+  "parameters": {
+    "configuration": {
+      "dataToExtract": "contentAndMetadata",
+      "indexingParameters": [
+        { "name": "maxPageSize", "value": 4000 }
+      ]
+    }
+  },
+  "fieldMappings": [
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "filepath" },
+    { "sourceFieldName": "metadata_storage_name", "targetFieldName": "source" },
+    { "sourceFieldName": "metadata_storage_last_modified", "targetFieldName": "lastUpdated" },
+    { "sourceFieldName": "metadata_storage_path", "targetFieldName": "id", "mappingFunction": { "name": "base64Encode" } }
+  ],
+  "outputFieldMappings": [
+    {
+      "sourceFieldName": "/document/pages_of_chunks/*",
+      "targetFieldName": "chunks",
+      "mappingMode": "custom",
+      "content": [
+        { "sourceFieldName": "/document/pages_of_chunks/*/text", "targetFieldName": "content" },
+        { "sourceFieldName": "/document/pages_of_chunks/*/vector_embedding", "targetFieldName": "embedding" },
+        { "sourceFieldName": "metadata_storage_name", "targetFieldName": "source_collection", "mappingFunction": { "name": "base64Encode" } }
+      ]
+    }
+  ],
+  "schedule": {"interval": "PT24H"}
+}'

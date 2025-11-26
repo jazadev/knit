@@ -1,0 +1,55 @@
+{
+  "name": "rag-indexer-2",
+  "description": "Current indexer",
+  "dataSourceName": "data-source-current",
+  "skillsetName": "rag-vectorization-skillset",
+  "targetIndexName": "rag-index-2",
+  "disabled": false,
+  "schedule": {
+    "interval": "P1D",
+    "startTime": "2025-11-26T00:10:50.265Z"
+  },
+  "parameters": {
+    "batchSize": 100,
+    "configuration": {
+      "dataToExtract": "storageMetadata",
+      "executionEnvironment": "standard",
+      "parsingMode": "default"
+    }
+  },
+  "fieldMappings": [
+    {
+      "sourceFieldName": "/document/metadata_storage_id",
+      "targetFieldName": "id",
+      "mappingFunction": {
+        "name": "base64Encode"
+      }      
+    },
+    {
+      "sourceFieldName": "/document/metadata_storage_name",
+      "targetFieldName": "source"
+    },
+    {
+      "sourceFieldName": "/document/metadata_storage_path",
+      "targetFieldName": "filepath"        
+    },
+    {
+      "sourceFieldName": "/document/metadata_last_modified",
+      "targetFieldName": "lastUpdated"        
+    }
+  ],
+  "outputFieldMappings": [
+    {
+      "sourceFieldName": "/document/pages_of_chunks/*/text",
+      "targetFieldName": "content"
+    },
+    {
+      "sourceFieldName": "/document/pages_of_chunks/*/vector_embedding",
+      "targetFieldName": "embedding"
+    },
+    {
+      "sourceFieldName": "/document/metadata_storage_name",
+      "targetFieldName": "source"
+    }
+  ]
+}
