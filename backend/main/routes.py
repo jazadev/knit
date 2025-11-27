@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, session, request, jsonify
-from backend.database.connection import get_container
+from flask import Blueprint, render_template, session, request, jsonify, url_for
 from datetime import datetime, timezone
+from backend.database.connection import get_container
+from .services import get_profile_by_key
 
 main_bp = Blueprint('main', __name__)
 
@@ -91,3 +92,24 @@ def delete_account():
         return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@main_bp.route('/use-cases')
+def use_cases():
+    session_user = session.get("user", None)
+    return render_template('use_cases.html', user=session_user)
+
+@main_bp.route('/api/demo/set-persona', methods=['POST'])
+def set_demo_persona():
+    data = request.get_json()
+    persona_type = data.get('type') 
+
+    selected = get_profile_by_key(persona_type)
+        
+    if not selected:
+        return jsonify({'error': 'Perfil demo no encontrado'}), 400
+
+    # inyectar sesión
+    session['user'] = selected
+    session.modified = True
+    
+    return jsonify({'status': 'success', 'redirect': url_for('main.index')})

@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4 md:p-8 transition-all duration-300">
+    
+    <div class="text-center max-w-2xl mb-12 space-y-4 animate-fade-in-down">
+        <div class="flex justify-center mb-6 text-blue-600 dark:text-blue-400">
+            <div class="h-10 md:h-20 w-auto">
+                <svg viewBox="0 0 2333 656" class="h-full w-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="matrix(1,0,0,1,-78.36,-298.36)">
+                        <g transform="matrix(1.37,0,0,1.37,-289.82,-313.56)">
+                            <path d="M273,451C273,451 275.212,909.482 274,910C272.788,910.518 375,912 375,912L374,781L430,724L571,911L696,911L501,652L683,453L565,452L376,653L375,453L273,451Z" />
+                            <path d="M744,452L746,910L825,911L824,564L905.59,662.322L985.286,744.771L1043,797L1101,752C1101,752 1029.218,688.01 1001.551,658.177C977.051,631.758 939.759,595.196 935,573C930.722,553.046 926.167,529.833 966,524C983.866,521.384 1041.743,555.606 1042,556C1042.257,556.394 1096,509 1096,509C1096,509 1095.463,503.932 1072.483,489.934C1054.931,479.242 1016.205,454.426 979,452C948.412,450.006 925.914,456.836 911.067,462.492C886.416,471.882 877.236,495.141 877,495C876.662,494.798 835,453 835,453L744,452Z" />
+                            <path d="M1183,694L1234,748C1234,748 1155.113,837.808 1089,877C1022.887,916.192 1000.168,920.305 977,921C953.832,921.695 924.053,922.387 888,890C851.947,857.613 857.689,810.567 860,799C873.739,730.228 909,695 909,695C909,695 931.707,718.65 945.858,732.193C949.163,735.356 965.677,748.306 963.763,750.971C941.523,781.931 932.751,802.565 933.475,818.361C934.748,846.154 969.536,864.802 1029.506,832.382C1056.314,817.889 1090.491,790.627 1115.604,769.002C1156.146,734.09 1180.304,702.84 1183,694Z" />
+                            <path d="M999,628L1051,683C1051,683 1157.547,553.328 1215,525C1334.784,465.939 1333.516,549.266 1272,624L1325,678C1325,678 1416.341,572.078 1359,496C1323.314,448.653 1262.505,442.039 1206,462C1170.539,474.527 1094.53,521.747 999,628Z" />
+                            <path d="M1134,625C1134,625 1188.485,576.061 1191,575C1193.515,573.939 1308.802,693.23 1311,695C1313.198,696.77 1361.804,759.6 1362,760C1406.215,850.153 1345.841,922.442 1267.463,921.778C1242.754,921.569 1217.503,915.587 1185.559,897.067C1184.554,896.484 1139.912,868.02 1141.05,867.029C1159.681,850.811 1195,816 1195,816C1195,816 1270.279,873.542 1298,832C1331.093,782.408 1134,625 1134,625Z" />
+                            <path d="M1425,452L1425,911L1528,912L1524,452L1425,452Z" />
+                            <path d="M1579,453L1580,534L1721,537L1720,912L1825,911L1826,537L1968,537L1967,453L1579,453Z" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Select a <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">Use Case</span>
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Choose a user profile to simulate a real-world interaction with Civic Knit.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+
+        <div onclick="selectPersona('mexicano')" class="group bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg border border-gray-200 dark:border-gray-700 p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1">
+            <div class="mb-4">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                    Jorge 🇲🇽
+                </h3>
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mt-1">Local Citizen</p>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
+                Lives in Mexico City...
+            </p>
+            <div class="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-4">
+                <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">Spanish</span>
+                <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">Procedures</span>
+            </div>
+        </div>
+
+        <div onclick="selectPersona('americano')" class="group bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg border border-gray-200 dark:border-gray-700 p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1">
+            <div class="mb-4">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                    Ana 🇺🇸
+                </h3>
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mt-1">Resident</p>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
+                Recently moved to CDMX ...
+            </p>
+            <div class="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-4">
+                <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">English</span>
+                <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">Civic Ed</span>
+            </div>
+        </div>
+
+        <div onclick="selectPersona('frances')" class="group bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg border border-gray-200 dark:border-gray-700 p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1">
+            <div class="mb-4">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                    Alice 🇫🇷
+                </h3>
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mt-1">Student</p>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
+                Visiting for a semester ...
+            </p>
+            <div class="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-4">
+                <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">French</span>
+                <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">Culture</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function selectPersona(type) {
+        document.body.style.cursor = 'wait';
+        
+        fetch('/api/demo/set-persona', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: type })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success' && data.redirect) {
+                const langMap = { 'mexicano': 'es', 'americano': 'en', 'frances': 'fr' };
+                localStorage.setItem('lang', langMap[type]);
+                window.location.href = data.redirect;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            document.body.style.cursor = 'default';
+        });
+    }
+</script>
+{% endblock %}
