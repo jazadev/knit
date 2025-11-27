@@ -51,7 +51,7 @@ window.civicApp = function () {
 
         updateLocationLogic() {
             // Siempre asumimos MX por defecto por demo
-            this.availableStates = [{ code: 'CDMX', label: 'Ciudad de México' }];
+            this.availableStates = [{ code: 'MX-CMX', label: 'Ciudad de México' }];
             
             if (this.userProfile.country !== 'MX') {
                 this.userProfile.country = 'MX';

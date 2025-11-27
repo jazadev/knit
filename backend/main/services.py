@@ -9,7 +9,7 @@ def get_demo_profiles():
                 'name': 'Jorge Ramírez',
                 'email': 'jorge@demo.com',
                 'country': 'MX',
-                'state': 'CDMX',
+                'state': 'MX-CMX',
                 'platformLang': 'es',
                 'age': 30,
                 'gender': 'male'
@@ -29,7 +29,7 @@ def get_demo_profiles():
                 'name': 'Ana Smith',
                 'email': 'ana@demo.com',
                 'country': 'MX',
-                'state': 'CDMX',
+                'state': 'MX-CMX',
                 'platformLang': 'en',
                 'age': 28,
                 'gender': 'female'
@@ -49,7 +49,7 @@ def get_demo_profiles():
                 'name': 'Alice Dubois',
                 'email': 'alice@demo.com',
                 'country': 'MX',
-                'state': 'CDMX',
+                'state': 'MX-CMX',
                 'platformLang': 'fr',
                 'age': 24,
                 'gender': 'female'

@@ -10,7 +10,7 @@ class PersonalInfo(BaseModel):
     age: Optional[str] = ""
     gender: Optional[str] = ""
     country: Optional[str] = "MX"
-    state: Optional[str] = ""
+    state: Optional[str] = "MX-CMX"
     phone: Optional[str] = ""
     platformLang: str = "es"
 
