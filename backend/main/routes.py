@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, session, request, jsonify, url_for
-from datetime import datetime, timezone
 from backend.database.connection import get_container
+from backend.database.models import UserProfile, PersonalInfo, Preferences
+from pydantic import ValidationError
 from .services import get_profile_by_key
 
 main_bp = Blueprint('main', __name__)
@@ -38,36 +39,41 @@ def save_profile():
     
     data = request.get_json()
     user_id = session['user']['oid']
-    
-    # documento a guardar
-    doc = {
-        "id": f"profile_{user_id}",
-        "userId": user_id,
-        "type": "profile",
-        
-        "personalInfo": {
-            "name": data.get('name'),
-            "email": data.get('email'),
-            "age": data.get('age'),
-            "gender": data.get('gender'),
-            "country": data.get('country'),
-            "state": data.get('state'),
-            "phone": data.get('phone'),
-            "platformLang": data.get('platformLang')
-        },
-        "preferences": {
-            "notifications": data.get('channels')
-        },
-        "topics": data.get('topics'),
-        
-        "updatedAt": datetime.now(timezone.utc).isoformat()
-    }
 
     try:
-        container.upsert_item(body=doc)
+        user_profile = UserProfile(
+            id=f"profile_{user_id}",
+            userId=user_id,
+            personalInfo=PersonalInfo(
+                name=data.get('name'),
+                email=data.get('email'),
+                age=str(data.get('age', '')), # Aseguramos string para evitar conflictos
+                gender=data.get('gender'),
+                country=data.get('country'),
+                state=data.get('state'),
+                phone=data.get('phone'),
+                platformLang=data.get('platformLang')
+            ),
+            preferences=Preferences(
+                notifications=data.get('channels', {})
+            ),
+            topics=data.get('topics', {})
+        )
+
+        # JSON limpio para Cosmos
+        doc_to_save = user_profile.model_dump()
+        container.upsert_item(body=doc_to_save)
+        
         return jsonify({"status": "success"})
+    
+    except ValidationError as e:
+        print(f"Error de validación: {e}")
+        return jsonify({"error": "Datos inválidos", "details": str(e)}), 400
+        
     except Exception as e:
+        print(f"Error guardando perfil: {e}")
         return jsonify({"error": str(e)}), 500
+    
 
 @main_bp.route('/api/delete-account', methods=['POST'])
 def delete_account():

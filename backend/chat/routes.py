@@ -4,6 +4,8 @@ from flask import Blueprint, request, jsonify, session
 from openai import AzureOpenAI
 from datetime import datetime, timezone, date
 from backend.database.connection import get_container
+from backend.database.models import ChatSession, ChatMessage
+from pydantic import ValidationError
 
 chat_bp = Blueprint('chat', __name__)
 
@@ -106,20 +108,22 @@ def chat():
         try:
             try:
                 chat_doc = container.read_item(item=chat_id, partition_key=user_id)
+                chat_session = ChatSession(**chat_doc)
             except Exception:
-                chat_doc = {
-                    "id": chat_id, "userId": user_id, "type": "chat",
-                    "title": user_message[:30] + "...",
-                    "createdAt": datetime.now(timezone.utc).isoformat(), 
-                    "messages": []
-                }
+                chat_session = ChatSession(
+                    id=chat_id, 
+                    userId=user_id, 
+                    title=user_message[:30] + "...",
+                    messages=[]
+                )
             
-            ts = datetime.now(timezone.utc).isoformat()
-            chat_doc["messages"].append({"role": "user", "text": user_message, "timestamp": ts})
-            chat_doc["messages"].append({"role": "ai", "text": ai_response, "timestamp": ts})
-            chat_doc["updatedAt"] = ts
-            
-            container.upsert_item(body=chat_doc)
-        except Exception as e: print(f"Error guardando: {e}")
+            chat_session.messages.append(ChatMessage(role="user", text=user_message))
+            chat_session.messages.append(ChatMessage(role="ai", text=ai_response))
+            chat_session.updatedAt = datetime.now(timezone.utc).isoformat()
+            container.upsert_item(body=chat_session.model_dump())
+        except ValidationError as e:
+            print(f"Error de validación de datos: {e}")
+        except Exception as e: 
+            print(f"Error guardando chat: {e}")
 
     return jsonify({"response": ai_response})
