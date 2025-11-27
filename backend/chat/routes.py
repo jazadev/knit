@@ -53,8 +53,13 @@ def get_chats():
         items = list(container.query_items(
             query=query, parameters=[{"name": "@userId", "value": user_id}], enable_cross_partition_query=False
         ))
-        return jsonify(items)
-    except Exception: return jsonify([])
+        chats_validados = [ChatSession(**item) for item in items]
+        return jsonify([chat.model_dump() for chat in chats_validados])
+    except ValidationError as e:
+        print(f"Error de integridad en historial: {e}")
+        return jsonify([]) # Si hay datos corruptos devuelve lista vacía por seguridad
+    except Exception: 
+        return jsonify([])
 
 @chat_bp.route('/api/chats', methods=['DELETE'])
 def delete_all_chats():
