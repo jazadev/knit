@@ -1,0 +1,30 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Entornos Virtuales (Tu carpeta env) ---
+env/
+venv/
+.venv/
+
+# --- Variables de Entorno y Secretos (MUY IMPORTANTE) ---
+.env
+.env.local
+instance/
+
+# --- IDEs y Editores ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Azure ---
+.funcignore
+app_service_settings.json
+
+# --- Logs ---
+*.log
+
+# --- Bash ---
+*.sh

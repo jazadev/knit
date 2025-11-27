@@ -1,0 +1,40 @@
+curl -X PUT "$SEARCH_ENDPOINT/skillsets/$SKILLSET_NAME?api-version=$API_VERSION" \
+-H "Content-Type: application/json" \
+-H "api-key: $SEARCH_ADMIN_KEY" \
+-d '{
+  "name": "'"$SKILLSET_NAME"'",
+  "description": "Skills para extraer, dividir y vectorizar documentos para RAG.",
+  "skills": [
+    {
+      "@odata.type": "#Microsoft.Skills.Util.DocumentExtractionSkill",
+      "name": "documentExtraction",
+      "parsingMode": "default",
+      "dataToExtract": "contentAndMetadata",
+      "context": "/document",
+      "inputs": [{"name": "file_data", "source": "/document/file_data"}],
+      "outputs": [
+        {"name": "content", "targetName": "extracted_text"},
+        {"name": "metadata_storage_last_modified", "targetName": "last_updated_date"}
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SplitSkill",
+      "name": "documentSplit",
+      "context": "/document/extracted_text",
+      "textSplitMode": "pages",
+      "maximumPageLength": 500,
+      "pageOverlapLength": 50,
+      "inputs": [{"name": "text", "source": "/document/extracted_text"}],
+      "outputs": [{"name": "textItems", "targetName": "pages_of_chunks"}]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.AzureOpenAIEmbeddingSkill",
+      "name": "vectorization",
+      "resourceUri": "'"$AOAI_RESOURCE_URI"'",
+      "deploymentId": "'"$AOAI_EMBEDDING_DEPLOYMENT"'",
+      "context": "/document/pages_of_chunks/*",
+      "inputs": [{"name": "text", "source": "/document/pages_of_chunks/*"}],
+      "outputs": [{"name": "embedding", "targetName": "vector_embedding"}]
+    }
+  ]
+}'

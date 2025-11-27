@@ -1,0 +1,13 @@
+curl -X PUT "$SEARCH_ENDPOINT/datasources/$DS_HISTORIC?api-version=$API_VERSION" \
+-H "Content-Type: application/json" \
+-H "api-key: $SEARCH_ADMIN_KEY" \
+-d '{
+  "name": "'"$DS_HISTORIC"'",
+  "type": "azureblob",
+  "credentials": {"connectionString": "'"$BLOB_CONNECTION_STRING"'"},
+  "container": {"name": "'"$BLOB_CONTAINER_NAME"'", "query": "collection1/"},
+  "dataChangeDetectionPolicy": {
+    "@odata.type": "#Microsoft.Azure.Search.HighWaterMarkChangeDetectionPolicy",
+    "highWaterMarkColumnName": "metadata_storage_last_modified"
+  }
+}'
