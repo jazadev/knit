@@ -15,8 +15,6 @@ client = AzureOpenAI(
     api_version=os.getenv("AZURE_OPENAI_API_VERSION")
 )
 
-SYSTEM_PROMPT = f"Eres Civic Knit... FECHA: {datetime.now().strftime('%d/%m/%Y')}"
-
 # Ruta para obtener token de voz
 @chat_bp.route('/api/speech-token', methods=['GET'])
 def get_speech_token():
@@ -85,10 +83,46 @@ def chat():
     req = request.get_json()
     user_message = req.get('message', '')
     chat_id = req.get('chatId')
+    app_lang = req.get('lang', 'es')
+    browser_lang = request.accept_languages.best
     container = get_container()
     user = session.get("user")
 
     if not user_message.strip(): return jsonify({"response": ""}), 400
+
+    now_utc = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+
+    user_context = ""
+    if user and 'dbProfile' in user:
+        profile = user['dbProfile']
+        nombre = profile.get('name', 'Ciudadano')
+        pais = profile.get('country', 'MX')
+        estado = profile.get('state', 'CDMX')
+        idioma = app_lang if app_lang else profile.get('platformLang', 'es')
+        
+        user_context = f"""
+        CONTEXTO DEL USUARIO:
+        - Nombre: {nombre}
+        - Ubicación: {estado}, {pais}
+        - Idioma preferido: {idioma}
+        """
+    else:
+        user_context = f"""
+        CONTEXTO DEL USUARIO (INVITADO):
+        - Estatus: Anónimo (No logueado)
+        - Idioma seleccionado en App: {app_lang}
+        - Idioma del navegador: {browser_lang}
+        """
+    
+    SYSTEM_PROMPT = f"""
+        Eres Civic Knit, un asistente experto en civismo.
+        FECHA Y HORA ACTUAL (UTC): {now_utc}.        
+        {user_context}
+        REGLAS:
+        1. Sé neutral y objetivo.
+        2. Si el usuario habla en otro idioma, respóndele en ese mismo idioma.
+        3. Basa tus respuestas en leyes y datos oficiales.
+        """
 
     # Lógica IA
     try:

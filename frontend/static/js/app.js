@@ -491,7 +491,7 @@ window.civicApp = function () {
             try {
                 const res = await fetch('/chat', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, chatId: chat.id })
+                    body: JSON.stringify({ message: text, chatId: chat.id, lang: this.lang })
                 });
                 const data = await res.json();
                 chat.messages.push({ role: 'ai', text: data.response });
