@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, request, jsonify, url_for
+from quart import Blueprint, render_template, session, request, jsonify, url_for
 from backend.database.connection import get_container
 from backend.database.models import UserProfile, PersonalInfo, Preferences
 from pydantic import ValidationError
@@ -7,19 +7,19 @@ from .services import get_profile_by_key
 main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
-def index():
+async def index():
     session_user = session.get("user", None)
     if not session_user:
-        return render_template('index.html', user=None)
+        return await render_template('index.html', user=None)
     
     frontend_user = session_user.copy()
-    container = get_container()
+    container = await get_container()
 
     if container:
         try:
             user_id = session_user.get("oid")
             # Leemos el perfil completo
-            doc = container.read_item(item=f"profile_{user_id}", partition_key=user_id)
+            doc = await container.read_item(item=f"profile_{user_id}", partition_key=user_id)
             
             # Inyectamos los datos
             frontend_user['dbProfile'] = doc.get('personalInfo', {})
@@ -29,15 +29,15 @@ def index():
             # Si no existe el perfil
             pass
 
-    return render_template('index.html', user=frontend_user)
+    return await render_template('index.html', user=frontend_user)
 
 @main_bp.route('/api/save-profile', methods=['POST'])
-def save_profile():
-    container = get_container()
+async def save_profile():
+    container = await get_container()
     if 'user' not in session or not container:
         return jsonify({"error": "401"}), 401
     
-    data = request.get_json()
+    data = await request.get_json()
     user_id = session['user']['oid']
 
     try:
@@ -62,7 +62,7 @@ def save_profile():
 
         # JSON limpio para Cosmos
         doc_to_save = user_profile.model_dump()
-        container.upsert_item(body=doc_to_save)
+        await container.upsert_item(body=doc_to_save)
         
         return jsonify({"status": "success"})
     
@@ -76,8 +76,8 @@ def save_profile():
     
 
 @main_bp.route('/api/delete-account', methods=['POST'])
-def delete_account():
-    container = get_container()
+async def delete_account():
+    container = await get_container()
     if 'user' not in session or not container:
         return jsonify({"error": "401"}), 401
     
@@ -85,14 +85,18 @@ def delete_account():
     
     try:
         # Borrado en cascada de todo lo del usuario
-        items = list(container.query_items(
+        items = []
+        query_iterable = container.query_items(
             query="SELECT * FROM c WHERE c.userId = @userId",
             parameters=[{"name": "@userId", "value": user_id}],
             enable_cross_partition_query=False
-        ))
+        )
+        
+        async for item in query_iterable:
+            items.append(item)
         
         for item in items:
-            container.delete_item(item=item['id'], partition_key=user_id)
+            await container.delete_item(item=item['id'], partition_key=user_id)
             
         session.clear()
         return jsonify({"status": "success"})
@@ -100,13 +104,13 @@ def delete_account():
         return jsonify({"error": str(e)}), 500
 
 @main_bp.route('/use-cases')
-def use_cases():
+async def use_cases():
     session_user = session.get("user", None)
-    return render_template('use_cases.html', user=session_user)
+    return await render_template('use_cases.html', user=session_user)
 
 @main_bp.route('/api/demo/set-persona', methods=['POST'])
-def set_demo_persona():
-    data = request.get_json()
+async def set_demo_persona():
+    data = await request.get_json()
     persona_type = data.get('type') 
 
     selected = get_profile_by_key(persona_type)

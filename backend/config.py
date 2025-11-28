@@ -7,12 +7,6 @@ load_dotenv()
 class Config:
     # Flask
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev_secret_key')
-    SESSION_TYPE = 'filesystem'
-    SESSION_FILE_DIR = './flask_session_data'
-    SESSION_PERMANENT = False
-    SESSION_USE_SIGNER = True
-    SESSION_COOKIE_SECURE = False 
-    SESSION_COOKIE_SAMESITE = 'Lax'
 
     # Azure msal
     CLIENT_ID = os.getenv("CLIENT_ID")

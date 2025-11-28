@@ -1,7 +1,9 @@
 import os
 import msal
-from flask import Blueprint, session, redirect, url_for, request
+import asyncio
+from quart import Blueprint, session, redirect, url_for, request
 from datetime import datetime, timezone
+from backend.database.connection import get_container
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -14,28 +16,35 @@ def _build_msal_app(cache=None):
     )
 
 @auth_bp.route('/api/login')
-def login():
-    redirect_uri = url_for("auth.authorized", _external=True)
+async def login():
+    redirect_uri = url_for("auth.authorized", _external=True, _scheme='https')
     
-    if "azurewebsites.net" in redirect_uri and redirect_uri.startswith("http://"):
-        redirect_uri = redirect_uri.replace("http://", "https://")
-
-    session["flow"] = _build_msal_app().initiate_auth_code_flow(
+    # Envolvemos la llamada síncrona en un hilo aparte
+    flow = await asyncio.to_thread(
+        _build_msal_app().initiate_auth_code_flow,
         [os.getenv("SCOPE")],
         redirect_uri=redirect_uri
     )
-    return redirect(session["flow"]["auth_uri"])
+    
+    session["flow"] = flow
+    return redirect(flow["auth_uri"])
 
 @auth_bp.route('/getAToken')
-def authorized():
+async def authorized():
     try:
         cache = msal.SerializableTokenCache()
         msal_app = _build_msal_app(cache=cache)
         flow = session.get("flow")
         
-        if not flow: return redirect(url_for("auth.login"))
+        if not flow: 
+            return redirect(url_for("auth.login", _external=True))
 
-        result = msal_app.acquire_token_by_auth_code_flow(flow, request.args)
+        # Envolvemos el intercambio de token
+        result = await asyncio.to_thread(
+            msal_app.acquire_token_by_auth_code_flow,
+            flow,
+            request.args
+        )
         
         if "error" in result: 
             return f"Error: {result.get('error_description')}"
@@ -44,13 +53,12 @@ def authorized():
         session["user"] = user_claims
         session["token_cache"] = cache.serialize()
         
-        from backend.database.connection import get_container
-        container = get_container()
+        container = await get_container()
 
         if container:
             user_id = user_claims.get("oid")
             try:
-                container.read_item(item=f"profile_{user_id}", partition_key=user_id)
+                await container.read_item(item=f"profile_{user_id}", partition_key=user_id)
             except Exception:
                 # Crear perfil limpio si no existe
                 new_profile = {
@@ -74,14 +82,14 @@ def authorized():
                     },
                     "createdAt": datetime.now(timezone.utc).isoformat()
                 }
-                container.create_item(body=new_profile)
+                await container.create_item(body=new_profile)
 
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.index", _external=True, _scheme='https'))
         
     except Exception as e:
         return f"Error Auth: {str(e)}"
 
 @auth_bp.route('/api/logout')
-def logout():
+async def logout():
     session.clear()
-    return redirect(f"{os.getenv('AUTHORITY')}/oauth2/v2.0/logout?post_logout_redirect_uri={url_for('main.index', _external=True)}")
+    return redirect(f"{os.getenv('AUTHORITY')}/oauth2/v2.0/logout?post_logout_redirect_uri={url_for('main.index', _external=True, _scheme='https')}")

@@ -1,11 +1,6 @@
 import os
-from flask import Flask, render_template
-from flask_session import Session
+from quart import Quart, render_template
 from .config import Config
-from werkzeug.middleware.proxy_fix import ProxyFix
-
-# Inicializamos extensiones globalmente
-sess = Session()
 
 def create_app(config_class=Config):
     # la ruta exacta de este archivo
@@ -16,15 +11,20 @@ def create_app(config_class=Config):
     static_dir = os.path.join(base_dir, '..', 'frontend', 'static')
 
     # inicializamos la app
-    app = Flask(__name__, 
+    app = Quart(__name__, 
                 template_folder=template_dir,
                 static_folder=static_dir)
     
     app.config.from_object(config_class)
 
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
-
-    sess.init_app(app)
+    # Detectamos si estamos en Azure o en Local
+    if os.getenv("WEBSITE_HOSTNAME"): 
+        # Estamos en Azure Forzamos HTTPS
+        app.config["PREFERRED_URL_SCHEME"] = "https"
+    else:
+        # Usamos HTTP normal para no romper SSL
+        app.config["PREFERRED_URL_SCHEME"] = "http"
+        app.config["SESSION_COOKIE_SECURE"] = False
 
     # bBlueprints
     from backend.main.routes import main_bp
@@ -36,11 +36,11 @@ def create_app(config_class=Config):
     app.register_blueprint(chat_bp)
 
     @app.errorhandler(404)
-    def page_not_found(e):
-        return render_template('/components/errors/404.html', user=None), 404
+    async def page_not_found(e):
+        return await render_template('/components/errors/404.html', user=None), 404
 
     @app.errorhandler(500)
-    def internal_error(e):
-        return render_template('/components/errors/500.html', user=None), 500
+    async def internal_error(e):
+        return await render_template('/components/errors/500.html', user=None), 500
 
     return app
