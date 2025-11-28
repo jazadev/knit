@@ -28,3 +28,4 @@ app_service_settings.json
 
 # --- Bash ---
 *.sh
+cdmx_gacetas/

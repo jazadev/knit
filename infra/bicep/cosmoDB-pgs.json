@@ -1,0 +1,127 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serverGroupName": {
+            "type": "string"
+        },
+        "databaseName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "preferredPrimaryZone": {
+            "type": "string"
+        },
+        "administratorLoginPassword": {
+            "type": "secureString"
+        },
+        "postgresqlVersion": {
+            "type": "string"
+        },
+        "coordinatorVcores": {
+            "type": "int"
+        },
+        "coordinatorStorageSizeMB": {
+            "type": "int"
+        },
+        "numWorkers": {
+            "type": "int"
+        },
+        "workerVcores": {
+            "type": "int"
+        },
+        "workerStorageSizeMB": {
+            "type": "int"
+        },
+        "enableHa": {
+            "type": "bool"
+        },
+        "enableGeoBackup": {
+            "type": "bool"
+        },
+        "coordinatorServerEdition": {
+            "type": "string"
+        },
+        "enablePublicIpAccess": {
+            "type": "bool"
+        },
+        "serverGroupTags": {
+            "type": "object"
+        },
+        "firewallRules": {
+            "type": "object"
+        }
+    },
+    "variables": {
+        "firewallRules": "[parameters('firewallRules').rules]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('serverGroupName')]",
+            "type": "Microsoft.DBforPostgreSQL/serverGroupsv2",
+            "apiVersion": "2023-03-02-preview",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('serverGroupTags')]",
+            "properties": {
+                "databaseName": "[parameters('databaseName')]",
+                "administratorLogin": "citus",
+                "preferredPrimaryZone": "[parameters('preferredPrimaryZone')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "enableHa": "[parameters('enableHa')]",
+                "enableGeoBackup": "[parameters('enableGeoBackup')]",
+                "postgresqlVersion": "[parameters('postgresqlVersion')]",
+                "coordinatorVCores": "[parameters('coordinatorVcores')]",
+                "coordinatorStorageQuotaInMb": "[parameters('coordinatorStorageSizeMB')]",
+                "coordinatorServerEdition": "[parameters('coordinatorServerEdition')]",
+                "nodeCount": "[parameters('numWorkers')]",
+                "nodeVCores": "[parameters('workerVcores')]",
+                "nodeStorageQuotaInMb": "[parameters('workerStorageSizeMB')]",
+                "nodeServerEdition": "MemoryOptimized",
+                "nodeEnablePublicIpAccess": "[parameters('enablePublicIpAccess')]"
+            },
+            "dependsOn": []
+        },
+        {
+            "apiVersion": "2019-08-01",
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('serverGroupName'), concat('-firewallRules-', copyIndex()))]",
+            "dependsOn": [
+                "[concat('Microsoft.DBforPostgreSQL/serverGroupsv2', concat('/', parameters('serverGroupName')))]"
+            ],
+            "resources": [],
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {},
+                "template": {
+                    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.DBforPostgreSQL/serverGroupsv2/firewallRules",
+                            "name": "[concat(parameters('serverGroupName'),'/',variables('firewallRules')[copyIndex()].name)]",
+                            "apiVersion": "2022-11-08",
+                            "properties": {
+                                "startIpAddress": "[variables('firewallRules')[copyIndex()].startIPAddress]",
+                                "endIpAddress": "[variables('firewallRules')[copyIndex()].endIPAddress]"
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
+            },
+            "subscriptionId": "afe507ff-21b7-4236-9c8e-6813a48adae0",
+            "resourceGroup": "rg-zuaj-01",
+            "copy": {
+                "count": "[if(greater(length(variables('firewallRules')), 0), length(variables('firewallRules')), 1)]",
+                "mode": "Serial",
+                "name": "firewallRulesIterator"
+            },
+            "condition": "[greater(length(variables('firewallRules')), 0)]"
+        }
+    ],
+    "outputs": {}
+}
