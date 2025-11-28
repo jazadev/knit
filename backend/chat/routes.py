@@ -46,23 +46,25 @@ async def get_chats():
     query = "SELECT * FROM c WHERE c.userId = @userId AND c.type = 'chat' ORDER BY c.updatedAt DESC"
     
     try:
-        # Iterador asíncrono
-        items = []
         query_iterable = container.query_items(
             query=query, 
-            parameters=[{"name": "@userId", "value": user_id}], 
-            enable_cross_partition_query=False
+            parameters=[{"name": "@userId", "value": user_id}] 
         )
         
-        async for item in query_iterable:
-            items.append(item)
-            
-        chats_validados = [ChatSession(**item) for item in items]
-        return jsonify([chat.model_dump() for chat in chats_validados])
-    except ValidationError as e:
-        print(f"Error de integridad: {e}")
-        return jsonify([]) 
-    except Exception: 
+        items_crudos = [item async for item in query_iterable]
+        
+        chats_finales = []
+        for item in items_crudos:
+            try:
+                chat_obj = ChatSession(**item)
+                chats_finales.append(chat_obj.model_dump(by_alias=True, mode='json'))
+            except ValidationError as e:
+                print(f"Chat corrupto ignorado (ID: {item.get('id')}): {e}")
+                
+        return jsonify(chats_finales)
+
+    except Exception as e:
+        print(f"Error leyendo chats: {e}")
         return jsonify([])
 
 @chat_bp.route('/api/chats', methods=['DELETE'])
@@ -72,7 +74,10 @@ async def delete_all_chats():
     user_id = session['user']['oid']
     try:
         query = "SELECT * FROM c WHERE c.userId = @userId AND c.type = 'chat'"
-        query_iterable = container.query_items(query=query, parameters=[{"name": "@userId", "value": user_id}])
+        query_iterable = container.query_items(
+            query=query, 
+            parameters=[{"name": "@userId", "value": user_id}] 
+        )
         
         items = []
         async for item in query_iterable:

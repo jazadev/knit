@@ -29,6 +29,7 @@ class UserProfile(BaseModel):
 
     class Config:
         populate_by_name = True
+        extra = 'ignore'
 
 # MODELOS DE CHAT
 class ChatMessage(BaseModel):
@@ -47,3 +48,4 @@ class ChatSession(BaseModel):
 
     class Config:
         populate_by_name = True
+        extra = 'ignore'

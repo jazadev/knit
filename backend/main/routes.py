@@ -89,7 +89,6 @@ async def delete_account():
         query_iterable = container.query_items(
             query="SELECT * FROM c WHERE c.userId = @userId",
             parameters=[{"name": "@userId", "value": user_id}],
-            enable_cross_partition_query=False
         )
         
         async for item in query_iterable:
@@ -119,7 +118,16 @@ async def set_demo_persona():
         return jsonify({'error': 'Perfil demo no encontrado'}), 400
 
     # inyectar sesión
-    session['user'] = selected
+    session_user = {
+        "oid": selected.get("oid") or selected.get("id") or selected.get("userId"),
+        "name": selected.get("name"),
+        "preferred_username": selected.get("email") or selected.get("preferred_username"),
+    }
+
+    if not session_user["oid"]:
+        return jsonify({'error': 'Perfil demo inválido: falta oid'}), 400
+    
+    session['user'] = session_user
     session.modified = True
     
     return jsonify({'status': 'success', 'redirect': url_for('main.index')})
