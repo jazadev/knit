@@ -5,6 +5,7 @@ aiosignal==1.4.0
 annotated-types==0.7.0
 anyio==4.11.0
 attrs==25.4.0
+azure-ai-contentsafety==1.0.0
 azure-core==1.36.0
 azure-cosmos==4.14.2
 blinker==1.9.0
@@ -25,6 +26,7 @@ httpx==0.28.1
 Hypercorn==0.18.0
 hyperframe==6.1.0
 idna==3.11
+isodate==0.7.2
 itsdangerous==2.2.0
 Jinja2==3.1.6
 jiter==0.12.0
