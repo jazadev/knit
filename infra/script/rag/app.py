@@ -270,10 +270,3 @@ async def execute_fused_search(query_text: str, top_k_total: int = 8):
 if __name__ == "__main__":
     # --- Parte 1: Implementación de la Infraestructura ---
     create_search_resources()
-
-    # --- Parte 2: Ejemplo de Búsqueda ---
-    # Es necesario que la parte 1 haya terminado y que los documentos se hayan vectorizado.
-    
-    # Nota: El cliente de búsqueda asíncrono necesita un loop de eventos.
-    # asyncio.run(execute_fused_search("¿Cuál es la política de vacaciones para 2024?"))
-    pass
