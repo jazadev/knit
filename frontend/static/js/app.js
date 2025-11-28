@@ -494,8 +494,28 @@ window.civicApp = function () {
                     body: JSON.stringify({ message: text, chatId: chat.id, lang: this.lang })
                 });
                 const data = await res.json();
-                chat.messages.push({ role: 'ai', text: data.response });
-            } catch (error) { chat.messages.push({ role: 'ai', text: this.t[this.lang].toast_error_conn }); }
+                console.log("DATOS RECIBIDOS:", data);
+
+                // --- CORRECCIÓN AQUÍ ---
+                if (data.moderation_flagged) {
+                    // Agregamos is_flagged: true DENTRO del objeto del mensaje
+                    chat.messages.push({ 
+                        role: 'ai', 
+                        text: data.ai_response, 
+                        is_flagged: true 
+                    });
+                    
+                    this.showToastMessage(this.t[this.lang]?.toast_error_content_safety || 'Contenido detectado como inapropiado', 'error');
+                } else {
+                    // Respuesta normal (Sin flag)
+                    chat.messages.push({ role: 'ai', text: data.response });
+                }
+                // Eliminé la línea extra que tenías aquí abajo que duplicaba el mensaje
+
+            } catch (error) { 
+                console.error(error);
+                chat.messages.push({ role: 'ai', text: this.t[this.lang].toast_error_conn }); 
+            }
             finally {
                 this.loading = false;
                 this.scrollToBottom();

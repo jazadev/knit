@@ -2,11 +2,12 @@ import os
 import requests
 import asyncio
 from quart import Blueprint, request, jsonify, session
-from openai import AsyncAzureOpenAI
+from openai import AsyncAzureOpenAI, BadRequestError
 from datetime import datetime, timezone
 from backend.database.connection import get_container
 from backend.database.models import ChatSession, ChatMessage
 from pydantic import ValidationError
+from .moderation import check_text_safety
 
 chat_bp = Blueprint('chat', __name__)
 
@@ -102,51 +103,75 @@ async def delete_chat(chat_id):
 async def chat():
     req = await request.get_json()
     user_message = req.get('message', '')
+
+    if not user_message.strip(): return jsonify({"response": ""}), 400
+    moderation_result = await asyncio.to_thread(check_text_safety, user_message)
+    if moderation_result['flagged']:
+        return jsonify({
+            "moderation_flagged": True,
+            "ai_response": "Hemos detectado contenido que viola nuestras normas de seguridad.",
+            "severity": moderation_result['severity'],
+            "original_message": user_message
+        })
+
+    # Le preguntamos a GPT si el mensaje es tóxico antes de responder.
+    try:
+        judge_response = await client.chat.completions.create(
+            model=os.getenv("AZURE_DEPLOYMENT_NAME"),
+            messages=[
+                {"role": "system", "content": """
+                 Eres un sistema de moderación de contenido para una App Cívica.
+                 Tu tarea es clasificar el mensaje del usuario.
+                 
+                 Reglas de bloqueo (Responde 'UNSAFE'):
+                 - Discriminación por género, raza o religión.
+                 - Discursos que nieguen derechos humanos (ej. derecho al voto).
+                 - Insultos o ataques personales.
+                 
+                 Reglas de paso (Responde 'SAFE'):
+                 - Opiniones políticas respetuosas.
+                 - Preguntas sobre trámites o leyes.
+                 - Críticas constructivas al gobierno.
+                 
+                 Responde SOLO una palabra: 'SAFE' o 'UNSAFE'.
+                 """},
+                {"role": "user", "content": user_message}
+            ],
+            temperature=0
+        )
+        
+        veredicto = judge_response.choices[0].message.content.strip()
+        
+        if "UNSAFE" in veredicto:
+            return jsonify({
+                "moderation_flagged": True,
+                "ai_response": "Este comentario ha sido ocultado porque promueve la discriminación o va en contra de los principios cívicos de igualdad.",
+                "severity": 5, # Severidad media/alta 
+                "original_message": user_message
+            })
+
+    except Exception as e:
+        print(f"Error en Juez Semántico: {e}")
+    
     chat_id = req.get('chatId')
     app_lang = req.get('lang', 'es')
-    
-    browser_lang = request.accept_languages.best 
-    
     container = await get_container()
     user = session.get("user")
 
-    if not user_message.strip(): return jsonify({"response": ""}), 400
-
     now_utc = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
 
-    # Lógica de contexto
+    # Lógica de contexto de usuario
     if user and 'dbProfile' in user:
         profile = user['dbProfile']
-        nombre = profile.get('name', 'Ciudadano')
-        pais = profile.get('country', 'MX')
-        estado = profile.get('state', 'CDMX')
-        idioma = app_lang if app_lang else profile.get('platformLang', 'es')
-        
-        user_context = f"""
-        CONTEXTO DEL USUARIO:
-        - Nombre: {nombre}
-        - Ubicación: {estado}, {pais}
-        - Idioma preferido: {idioma}
-        """
+        user_context = f"Usuario: {profile.get('name')}, {profile.get('state')}, {profile.get('country')}"
     else:
-        user_context = f"""
-        CONTEXTO DEL USUARIO (INVITADO):
-        - Estatus: Anónimo
-        - Idioma seleccionado: {app_lang}
-        - Idioma navegador: {browser_lang}
-        """
+        user_context = "Usuario Invitado."
     
     SYSTEM_PROMPT = f"""
-        Eres Civic Knit, un asistente experto en civismo.
-        FECHA UTC: {now_utc}.        
-        {user_context}
-        REGLAS:
-        1. Sé neutral y objetivo.
-        2. Respeta el idioma del usuario ({app_lang}).
-        3. Basa tus respuestas en leyes y datos oficiales.
+        Eres Civic Knit. FECHA: {now_utc}. {user_context}.
+        Idioma: {app_lang}. Sé neutral, objetivo y cívico.
         """
 
-    # Lógica IA
     try:
         response = await client.chat.completions.create(
             model=os.getenv("AZURE_DEPLOYMENT_NAME"),
@@ -154,34 +179,34 @@ async def chat():
             temperature=0.7
         )
         ai_response = response.choices[0].message.content
+
+    except BadRequestError as e:
+        if e.code == 'content_filter':
+            return jsonify({
+                "moderation_flagged": True,
+                "ai_response": "Contenido bloqueado por las políticas de seguridad de Azure AI.",
+                "severity": 2, 
+                "original_message": user_message
+            })
+        ai_response = "Error en la solicitud."
     except Exception as e:
-        print(f"Error OpenAI: {e}")
         ai_response = "Error de conexión."
 
-    # Persistencia
-    if user and container and chat_id:
+    # Persistencia (Guardar chat)
+    if user and container and chat_id and ai_response:
+        # (Tu lógica de guardado sigue igual aquí...)
         user_id = user.get("oid")
         try:
             try:
                 chat_doc = await container.read_item(item=chat_id, partition_key=user_id)
                 chat_session = ChatSession(**chat_doc)
             except Exception:
-                chat_session = ChatSession(
-                    id=chat_id, 
-                    userId=user_id, 
-                    title=user_message[:30] + "...",
-                    messages=[]
-                )
+                chat_session = ChatSession(id=chat_id, userId=user_id, title=user_message[:30]+"...", messages=[])
             
             chat_session.messages.append(ChatMessage(role="user", text=user_message))
             chat_session.messages.append(ChatMessage(role="ai", text=ai_response))
             chat_session.updatedAt = datetime.now(timezone.utc).isoformat()
-            
             await container.upsert_item(body=chat_session.model_dump())
-            
-        except ValidationError as e:
-            print(f"Error validación: {e}")
-        except Exception as e: 
-            print(f"Error guardando chat: {e}")
+        except Exception as e: print(f"Error guardando: {e}")
 
     return jsonify({"response": ai_response})
