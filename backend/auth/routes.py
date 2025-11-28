@@ -17,7 +17,7 @@ def _build_msal_app(cache=None):
 
 @auth_bp.route('/api/login')
 async def login():
-    redirect_uri = url_for("auth.authorized", _external=True, _scheme='https')
+    redirect_uri = url_for("auth.authorized", _external=True)
     
     # Envolvemos la llamada síncrona en un hilo aparte
     flow = await asyncio.to_thread(
@@ -32,12 +32,12 @@ async def login():
 @auth_bp.route('/getAToken')
 async def authorized():
     try:
+        flow = session.get("flow")
+        if not flow: 
+            return redirect(url_for("auth.login"))
+        
         cache = msal.SerializableTokenCache()
         msal_app = _build_msal_app(cache=cache)
-        flow = session.get("flow")
-        
-        if not flow: 
-            return redirect(url_for("auth.login", _external=True))
 
         # Envolvemos el intercambio de token
         result = await asyncio.to_thread(
@@ -46,12 +46,18 @@ async def authorized():
             request.args
         )
         
+        session.pop("flow", None)
+
         if "error" in result: 
             return f"Error: {result.get('error_description')}"
 
         user_claims = result.get("id_token_claims")
-        session["user"] = user_claims
-        session["token_cache"] = cache.serialize()
+
+        session["user"] = {
+            "oid": user_claims.get("oid"),
+            "name": user_claims.get("name"),
+            "email": user_claims.get("preferred_username") or user_claims.get("email"),
+        }
         
         container = await get_container()
 
@@ -84,7 +90,7 @@ async def authorized():
                 }
                 await container.create_item(body=new_profile)
 
-        return redirect(url_for("main.index", _external=True, _scheme='https'))
+        return redirect(url_for("main.index"))
         
     except Exception as e:
         return f"Error Auth: {str(e)}"
@@ -92,4 +98,4 @@ async def authorized():
 @auth_bp.route('/api/logout')
 async def logout():
     session.clear()
-    return redirect(f"{os.getenv('AUTHORITY')}/oauth2/v2.0/logout?post_logout_redirect_uri={url_for('main.index', _external=True, _scheme='https')}")
+    return redirect(f"{os.getenv('AUTHORITY')}/oauth2/v2.0/logout?post_logout_redirect_uri={url_for('main.index')}")
