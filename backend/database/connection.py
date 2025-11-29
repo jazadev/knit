@@ -6,7 +6,8 @@ _container_client = None
 
 async def get_container():
     global _container_client
-    if _container_client: return _container_client
+    if _container_client: 
+        return _container_client
     
     try:
         client = CosmosClient(

@@ -31,9 +31,10 @@ app_service_settings.json
 # --- Logs ---
 *.log
 
-
 # --- Ignorar datos de sesión de Flask ---
 flask_session/
 flask_session_data/
 instance/
 .pytest_cache/
+
+*.sh

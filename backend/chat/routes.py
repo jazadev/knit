@@ -47,7 +47,8 @@ async def get_speech_token():
 @chat_bp.route('/api/chats', methods=['GET'])
 async def get_chats():
     container = await get_container()
-    if 'user' not in session or not container: return jsonify([]), 200
+    if 'user' not in session or not container:
+        return jsonify([]), 200
     
     user_id = session['user']['oid']
     query = "SELECT * FROM c WHERE c.userId = @userId AND c.type = 'chat' ORDER BY c.updatedAt DESC"
@@ -77,7 +78,8 @@ async def get_chats():
 @chat_bp.route('/api/chats', methods=['DELETE'])
 async def delete_all_chats():
     container = await get_container()
-    if 'user' not in session or not container: return jsonify({"error": "401"}), 401
+    if 'user' not in session or not container:
+        return jsonify({"error": "401"}), 401
     user_id = session['user']['oid']
     try:
         query = "SELECT * FROM c WHERE c.userId = @userId AND c.type = 'chat'"
@@ -94,16 +96,19 @@ async def delete_all_chats():
             await container.delete_item(item=item['id'], partition_key=user_id)
             
         return jsonify({"status": "success"})
-    except Exception as e: return jsonify({"error": str(e)}), 500
+    except Exception as e: 
+        return jsonify({"error": str(e)}), 500
 
 @chat_bp.route('/api/chats/<chat_id>', methods=['DELETE'])
 async def delete_chat(chat_id):
     container = await get_container()
-    if 'user' not in session or not container: return jsonify({"error": "401"}), 401
+    if 'user' not in session or not container:
+        return jsonify({"error": "401"}), 401
     try:
         await container.delete_item(item=chat_id, partition_key=session['user']['oid'])
         return jsonify({"status": "success"})
-    except Exception: return jsonify({"error": "failed"}), 500
+    except Exception: 
+        return jsonify({"error": "failed"}), 500
 
 @chat_bp.route('/chat', methods=['POST'])
 async def chat():
@@ -112,7 +117,8 @@ async def chat():
     app_lang = req.get('lang', 'es')
     user_message = req.get('message', '')
 
-    if not user_message.strip(): return jsonify({"response": ""}), 400
+    if not user_message.strip():
+        return jsonify({"response": ""}), 400
     moderation_result = await asyncio.to_thread(check_text_safety, user_message)
     if moderation_result['flagged']:
         warning_message = MODERATION_WARNINGS.get(app_lang, MODERATION_WARNINGS['es'])
@@ -214,7 +220,7 @@ async def chat():
             })
         ai_response = "Error en la solicitud."
     except Exception as e:
-        ai_response = "Error de conexión."
+        ai_response = f"Error {e} de conexión."
 
     # Persistencia (Guardar chat)
     if user and container and chat_id and ai_response:
@@ -231,6 +237,7 @@ async def chat():
             chat_session.messages.append(ChatMessage(role="ai", text=ai_response))
             chat_session.updatedAt = datetime.now(timezone.utc).isoformat()
             await container.upsert_item(body=chat_session.model_dump())
-        except Exception as e: print(f"Error guardando: {e}")
+        except Exception as e:
+            print(f"Error guardando: {e}")
 
     return jsonify({"response": ai_response})
