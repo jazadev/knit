@@ -166,7 +166,7 @@
                                 </svg>
 
                                 <span
-                                    x-text="currentSpeakingText === cleanForTTS(msg.text) ? 'Detener' : 'Escuchar'"></span>
+                                    x-text="currentSpeakingText === cleanForTTS(msg.text) ? t[lang].btn_stop : t[lang].btn_listen"></span>
                             </button>
 
                         </div>
@@ -175,7 +175,7 @@
                 </div>
             </template>
 
- <template x-if="msg.role === 'ai'">
+            <template x-if="msg.role === 'ai'">
                 <div class="flex justify-start gap-3 mb-6 animate-fade-in-up group">
                     
                     <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm mt-1"
@@ -221,7 +221,7 @@
                                         d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
                                 </svg>
 
-                                <span x-text="currentSpeakingText === cleanForTTS(msg.text) ? 'Detener' : 'Escuchar'"></span>
+                                <span x-text="currentSpeakingText === cleanForTTS(msg.text) ? t[lang].btn_stop : t[lang].btn_listen"></span>
                             </button>
                         </div>
                     </div>

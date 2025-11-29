@@ -57,6 +57,9 @@ window.CIVIC_DATA = {
         toast_success_history: 'Historial eliminado',
         toast_error_history: 'Error al borrar historial',
         toast_mic_nomatch: 'No te escuché bien',
+        toast_error_content_safety: 'Contenido detectado como inapropiado',        
+        toast_success_status: 'Operación exitosa',
+        toast_error_status: 'Error',
         
         prefs_sec: 'Canales de Comunicación',
         lbl_receive_via: 'Quiero recibir información por:',
@@ -101,7 +104,13 @@ window.CIVIC_DATA = {
         error_500_title: 'Error interno en el servidor',
         error_500_msg: 'Ha ocurrido un problema inesperado. Nuestro asistente no pudo completar tu solicitud.',
         error_500_back: 'Volver al chat principal',
-        error_500_retry: 'Reintentar'
+        error_500_retry: 'Reintentar',
+
+        btn_listen: 'Escuchar',
+        btn_stop: 'Detener',
+        mod_warning_msg: 'Hemos detectado contenido que podría violar nuestras normas. Por favor, reformula tu pregunta.',
+        mod_action_edit: 'Editar Mensaje',
+        
     },
     en: {
         new_chat: 'New Chat',
@@ -162,6 +171,9 @@ window.CIVIC_DATA = {
         toast_success_history: 'History cleared',
         toast_error_history: 'Error clearing history',
         toast_mic_nomatch: 'I didn\'t hear you well',
+        toast_success_status: 'Success',
+        toast_error_status: 'Error',
+        toast_error_content_safety: 'Inappropriate content detected',
         
         prefs_sec: 'Communication Channels',
         lbl_receive_via: 'I want to receive info via:',
@@ -205,7 +217,12 @@ window.CIVIC_DATA = {
         error_500_title: 'Internal server error',
         error_500_msg: 'An unexpected problem occurred. Our assistant could not complete your request.',
         error_500_back: 'Back to main chat',
-        error_500_retry: 'Try again'
+        error_500_retry: 'Try again',
+
+        btn_listen: 'Listen',
+        btn_stop: 'Stop',
+        mod_warning_msg: 'We detected content that may violate our guidelines. Please rephrase your query.',
+        mod_action_edit: 'Edit Message',
     },
     fr: {
         new_chat: 'Nouveau chat',
@@ -265,6 +282,9 @@ window.CIVIC_DATA = {
         toast_success_history: 'Historique effacé',
         toast_error_history: 'Erreur lors de l\'effacement de l\'historique',
         toast_mic_nomatch: 'Je ne vous ai pas bien entendu',
+        toast_success_status: 'Succès',
+        toast_error_status: 'Erreur',
+        toast_error_content_safety: 'Contenu inapproprié détecté',
         
         prefs_sec: 'Canaux de communication',
         lbl_receive_via: 'Je veux recevoir des informations par :',
@@ -309,7 +329,12 @@ window.CIVIC_DATA = {
         error_500_title: 'Erreur interne du serveur',
         error_500_msg: 'Un problème inattendu est survenu. Notre assistant n\'a pas pu compléter votre demande.',
         error_500_back: 'Retour au chat principal',
-        error_500_retry: 'Réessayer'
+        error_500_retry: 'Réessayer',
+
+        btn_listen: 'Écouter',
+        btn_stop: 'Arrêter',
+        mod_warning_msg: 'Nous avons détecté du contenu pouvant enfreindre nos règles. Veuillez reformuler votre requête.',
+        mod_action_edit: 'Modifier le message',
     }
 
 };

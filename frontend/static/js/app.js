@@ -505,7 +505,7 @@ window.civicApp = function () {
                         is_flagged: true 
                     });
                     
-                    this.showToastMessage(this.t[this.lang]?.toast_error_content_safety || 'Contenido detectado como inapropiado', 'error');
+                    this.showToastMessage(this.t[this.lang].toast_error_content_safety, 'error');
                 } else {
                     // Respuesta normal (Sin flag)
                     chat.messages.push({ role: 'ai', text: data.response });

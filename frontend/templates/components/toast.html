@@ -33,7 +33,7 @@
     <!-- Mensaje -->
     <div class="flex-1">
         <p class="font-semibold text-sm"
-           x-text="toast.type === 'error' ? 'Error' : 'Operación exitosa'"></p>
+           x-text="toast.type === 'error' ? t[lang].toast_error_status : t[lang].toast_success_status"></p>
         <p class="text-xs mt-0.5 leading-snug" x-text="toast.message"></p>
     </div>
 

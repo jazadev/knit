@@ -17,6 +17,12 @@ client = AsyncAzureOpenAI(
     api_version=os.getenv("AZURE_OPENAI_API_VERSION")
 )
 
+MODERATION_WARNINGS = {
+    'es': "Hemos detectado contenido que podría violar nuestras normas. Por favor, reformula tu pregunta.",
+    'en': "We detected content that may violate our guidelines. Please rephrase your query.",
+    'fr': "Nous avons détecté du contenu pouvant enfreindre nos règles. Veuillez reformuler votre requête."
+}
+
 # Ruta para obtener token de voz
 @chat_bp.route('/api/speech-token', methods=['GET'])
 async def get_speech_token():
@@ -102,14 +108,18 @@ async def delete_chat(chat_id):
 @chat_bp.route('/chat', methods=['POST'])
 async def chat():
     req = await request.get_json()
+    chat_id = req.get('chatId')
+    app_lang = req.get('lang', 'es')
     user_message = req.get('message', '')
 
     if not user_message.strip(): return jsonify({"response": ""}), 400
     moderation_result = await asyncio.to_thread(check_text_safety, user_message)
     if moderation_result['flagged']:
+        warning_message = MODERATION_WARNINGS.get(app_lang, MODERATION_WARNINGS['es'])
+        
         return jsonify({
             "moderation_flagged": True,
-            "ai_response": "Hemos detectado contenido que viola nuestras normas de seguridad.",
+            "ai_response": warning_message,
             "severity": moderation_result['severity'],
             "original_message": user_message
         })
@@ -120,20 +130,20 @@ async def chat():
             model=os.getenv("AZURE_DEPLOYMENT_NAME"),
             messages=[
                 {"role": "system", "content": """
-                 Eres un sistema de moderación de contenido para una App Cívica.
-                 Tu tarea es clasificar el mensaje del usuario.
+                 Role: Content Moderation AI for a Civic App.
+                 Task: Classify the user message.
                  
-                 Reglas de bloqueo (Responde 'UNSAFE'):
-                 - Discriminación por género, raza o religión.
-                 - Discursos que nieguen derechos humanos (ej. derecho al voto).
-                 - Insultos o ataques personales.
+                 BLOCKING RULES (Respond 'UNSAFE'):
+                 1. Discrimination/Hate: Against gender, race, religion, nationality (e.g., "Women can't lead", "X people are bad").
+                 2. Insults/Attacks: Personal attacks (e.g., "You are stupid", "Idiot").
+                 3. Anti-Democratic: Denying human rights (e.g., "Don't vote").
                  
-                 Reglas de paso (Responde 'SAFE'):
-                 - Opiniones políticas respetuosas.
-                 - Preguntas sobre trámites o leyes.
-                 - Críticas constructivas al gobierno.
+                 PASSING RULES (Respond 'SAFE'):
+                 1. Opinions on politics (even negative ones, if respectful).
+                 2. Questions about laws, procedures, or history.
+                 3. Civic criticism.
                  
-                 Responde SOLO una palabra: 'SAFE' o 'UNSAFE'.
+                 Output: Respond ONLY with one word: 'SAFE' or 'UNSAFE'.
                  """},
                 {"role": "user", "content": user_message}
             ],
@@ -142,19 +152,19 @@ async def chat():
         
         veredicto = judge_response.choices[0].message.content.strip()
         
-        if "UNSAFE" in veredicto:
+        if "UNSAFE" in veredicto:        
+            warning_message = MODERATION_WARNINGS.get(app_lang, MODERATION_WARNINGS['es'])
+
             return jsonify({
                 "moderation_flagged": True,
-                "ai_response": "Este comentario ha sido ocultado porque promueve la discriminación o va en contra de los principios cívicos de igualdad.",
-                "severity": 5, # Severidad media/alta 
+                "ai_response": warning_message, # <-- Enviamos el texto traducido
+                "severity": 5,
                 "original_message": user_message
             })
 
     except Exception as e:
         print(f"Error en Juez Semántico: {e}")
     
-    chat_id = req.get('chatId')
-    app_lang = req.get('lang', 'es')
     container = await get_container()
     user = session.get("user")
 
@@ -168,21 +178,22 @@ async def chat():
         user_context = "Usuario Invitado."
     
     SYSTEM_PROMPT = f"""
-    Eres **Civic Knit**, un Asistente Cívico Digital especializado en información gubernamental, legal, trámites y políticas públicas. Tu objetivo principal es facilitar la vida cívica del usuario, proporcionando información clara, accesible y precisa.
+    ROLE: You are **Civic Knit**, a Digital Civic Assistant specialized in government information, laws, procedures, and public policies. Your main goal is to facilitate civic life by providing clear, accessible, and accurate information.
 
-    # REGLAS Y CONTEXTO
-    1.  **IDENTIDAD:** Eres neutral, objetivo, cívico y estrictamente profesional.
-    2.  **UBICACIÓN DE ENFOQUE:** Tu base de conocimiento está orientada a la **Ciudad de México (CDMX)**. Todas las respuestas sobre trámites, leyes o programas deben estar enmarcadas en esta jurisdicción, a menos que el usuario pregunte por un tema federal o especifique otro lugar.
-    3.  **ACTUALIZACIÓN (RAG):** Tienes acceso a documentos legales y normativos recientes. **DEBES PRIORIZAR esta información** sobre tu conocimiento general para asegurar la mayor actualidad y precisión posible. Si la información no es relevante, usa tu base de conocimiento.
-    4.  **MODERACIÓN:** El mensaje del usuario ya ha pasado un filtro de seguridad. Mantén siempre un tono **respetuoso** y **servicial**. Nunca seas punitivo ni repitas reglas de seguridad al usuario.
+    # CORE RULES & CONTEXT
+    1. **IDENTITY:** Be neutral, objective, civic-minded, and strictly professional.
+    2. **LOCATION SCOPE:** Your knowledge base is focused on **Mexico City (CDMX)**. All answers regarding procedures, laws, or programs must be framed within this jurisdiction unless the user explicitly asks about federal topics or another location.
+    3. **KNOWLEDGE PRIORITY (RAG):** You have access to recent legal and normative documents. **YOU MUST PRIORITIZE this information** over your general knowledge to ensure currency and precision. If the context is not relevant, rely on your internal training.
+    4. **MODERATION:** The user's message has already passed a safety filter. Always maintain a **respectful** and **helpful** tone. Never be punitive or repeat safety rules to the user.
 
-    # DATOS DE SESIÓN
-    - FECHA y HORA: {now_utc}
-    - IDIOMA DE RESPUESTA: {app_lang}
-    - PERFIL DEL USUARIO: {user_context}
+    # OUTPUT INSTRUCTION
+    - **LANGUAGE:** You MUST respond strictly in the language: **{app_lang}**.
+    - **FORMAT:** Use **Markdown** (bolding, lists, headers) to make reading easier.
+    - **CITATIONS:** If you used information from the provided documents, add a reference at the end (e.g., "Source: Official Gazette, Art. 5").
 
-    # INSTRUCCIÓN FINAL
-    Responde a la solicitud del usuario de manera concisa, clara, y utilizando formato **Markdown** (negritas, listas, encabezados) para facilitar la lectura. Si te basaste en un documento de la FUENTE DE INFORMACIÓN, haz una referencia al final (ej. "Fuente: Gaceta Oficial, Art. 5").
+    # SESSION DATA
+    - CURRENT DATE UTC: {now_utc}
+    - USER PROFILE: {user_context}
     """
 
     try:

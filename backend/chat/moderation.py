@@ -5,8 +5,6 @@ from azure.core.credentials import AzureKeyCredential
 def check_text_safety(text: str) -> dict:
     """ Llama al servicio Azure AI Content Safety para revisar un texto. """
     
-    # 1. FILTRO MANUAL (Tolerancia Cero)
-    # Palabras que tú decides prohibir manualmente
     palabras_prohibidas = ["odio", "estupid", "idiota", "maldit"]
     text_lower = text.lower()
     
@@ -39,9 +37,6 @@ def check_text_safety(text: str) -> dict:
         # Bajamos la tolerancia a > 0 para ser más estrictos
         flagged = any(result.severity > 0 for result in response.categories_analysis)
 
-        # --- CORRECCIÓN AQUÍ ---
-        # Convertimos el resultado de Azure a una lista de diccionarios simple
-        # para que 'jsonify' no falle al enviarlo al frontend.
         analysis_simple = [
             {"category": str(res.category), "severity": res.severity} 
             for res in response.categories_analysis
