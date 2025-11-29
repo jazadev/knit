@@ -3,7 +3,7 @@
 Plataforma de orientación ciudadana impulsada por Inteligencia Artificial, reconocimiento de voz y moderación de contenido en tiempo real.
 
 Este proyecto opera bajo una arquitectura híbrida: el código fuente se ejecuta en el entorno local o en Azure App Service, mientras que los servicios cognitivos y de datos residen en la nube de Microsoft Azure.
-
+[https://civicknit-cnfgb0ergmdsh5a9.canadacentral-01.azurewebsites.net/](aplicaciom)
 ---
 
 ## FASE 1: Aprovisionamiento de Infraestructura (Requisito Inicial)
