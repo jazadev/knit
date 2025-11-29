@@ -202,6 +202,9 @@ async def chat():
     - USER PROFILE: {user_context}
     """
 
+    from .office_agent import agent
+    agent = agent()
+
     try:
         response = await client.chat.completions.create(
             model=os.getenv("AZURE_DEPLOYMENT_NAME"),
