@@ -2,6 +2,21 @@ import os
 from quart import Quart, render_template
 from .config import Config
 
+class ForceHttpsMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        # Solo actuamos si es una petición web (http o websocket)
+        if scope["type"] in ("http", "websocket"):
+            headers = dict(scope.get("headers", []))
+            
+            if b"x-forwarded-proto" in headers:
+                # Si el header dice 'https', forzamos el esquema a 'https'
+                scope["scheme"] = headers[b"x-forwarded-proto"].decode("ascii")
+        
+        return await self.app(scope, receive, send)
+
 def create_app(config_class=Config):
     # la ruta exacta de este archivo
     base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -17,7 +32,9 @@ def create_app(config_class=Config):
     
     app.config.from_object(config_class)
 
-    # Detectamos si estamos en Azure o en Local
+    app.asgi_app = ForceHttpsMiddleware(app.asgi_app)
+
+    # Configuración adicional de seguridad
     if os.getenv("WEBSITE_HOSTNAME"): 
         # Estamos en Azure Forzamos HTTPS
         app.config["PREFERRED_URL_SCHEME"] = "https"
